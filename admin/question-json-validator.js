@@ -76,14 +76,14 @@
 
   function renderLibrary(){
     if(!library||!list)return;
-    const stored=CMAZoneQuestionStore.read();
+    const stored=Array.isArray(CMAZoneQuestionStore.read())?CMAZoneQuestionStore.read():[];
     const draftRows=validated&&Array.isArray(validated.qs)?validated.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:validated.topSubject,attempt:validated.topAttempt})):[];
     const seen=new Set(), all=[];
-    stored.concat(draftRows).forEach(q=>{const key=q.id||[q.questionNo,q.subject,q.chapter,q.attempt,String(q.question||q.questionHtml||q.text||'')].join('|');if(!seen.has(key)){seen.add(key);all.push(q)}});
-    const rows=all.filter(q=>(currentFilter==='all'||(currentFilter==='pyq' ? String(q.source||'').toUpperCase().includes('PYQ') : q.questionType===currentFilter))&&(!librarySearch||String(q.questionNo||'').toLowerCase().includes(librarySearch)||String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').toLowerCase().includes(librarySearch))&&(!librarySubject||q.subject===librarySubject)&&(!libraryAttempt||String(q.attempt||q.source||'')===libraryAttempt)&&(!libraryChapter||q.chapter===libraryChapter));
+    stored.concat(draftRows).forEach((raw,i)=>{const q=(raw&&typeof raw==='object')?CMAZoneQuestionStore.normalize(raw,i,{subject:raw.subject||raw.subjectName||'',attempt:raw.attempt||raw.paperAttempt||''}):null;if(!q)return;const key=q.id||[q.questionNo,q.subject,q.chapter,q.attempt,String(q.question||q.questionHtml||q.text||'')].join('|');if(!seen.has(key)){seen.add(key);all.push(q)}});
+    const rows=all.filter(q=>(currentFilter==='all'||(currentFilter==='pyq' ? (String(q.source||'').toUpperCase().includes('PYQ')||q.surfaces?.includes('mcq-pyq')||q.surfaces?.includes('subjective-pyq')) : q.questionType===currentFilter))&&(!librarySearch||String(q.questionNo||'').toLowerCase().includes(librarySearch)||String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').toLowerCase().includes(librarySearch))&&(!librarySubject||q.subject===librarySubject)&&(!libraryAttempt||String(q.attempt||q.source||'')===libraryAttempt)&&(!libraryChapter||q.chapter===libraryChapter));
     library.style.display='block';
     list.innerHTML=rows.length?rows.map((q,i)=>{
-      const previewText=String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,220);
+      const previewText=String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
       return '<div class="question-library-row"><div class="question-library-main"><div class="question-library-top"><strong>'+esc(q.questionNo||('Question '+(i+1)))+'</strong><span>'+esc(q.questionType==='mcq'?'MCQ':'Subjective')+'</span><span>'+esc(q.subject||'')+'</span><span>'+esc(q.chapter||'')+'</span><span>'+esc(q.marks||'—')+' Marks</span></div><div class="question-library-attempt">'+esc(q.attempt||q.source||'No Attempt')+'</div><p>'+esc(previewText||'Question content stored as HTML.')+'</p></div><button class="btn btn-gold edit-question-btn" data-id="'+esc(q.id)+'" type="button">EDIT</button></div>'
     }).join(''):'<div class="question-library-empty">No questions found for this filter.</div>';
     list.querySelectorAll('.edit-question-btn').forEach(b=>b.addEventListener('click',()=>openEditor(b.dataset.id)));
@@ -145,7 +145,7 @@ document.getElementById('questionLibrarySearch')?.addEventListener('input',e=>{l
       window.location.assign('question-preview.html');
     }catch(e){alert('Preview could not be opened: '+(e.message||'Unknown error'))}
   });
-  document.getElementById('toggleQuestionLibrary')?.addEventListener('click',()=>{library.style.display=library.style.display==='none'?'block':'none';fillLibraryFilters();renderLibrary()});document.querySelectorAll('.question-type').forEach(b=>b.addEventListener('click',()=>{currentFilter=b.dataset.type;document.querySelectorAll('.question-type').forEach(x=>x.classList.toggle('active',x===b));renderLibrary()}));window.addEventListener('cmaZoneQuestionsUpdated',()=>{fillLibraryFilters();renderLibrary()});
+  document.getElementById('toggleQuestionLibrary')?.addEventListener('click',()=>{const opening=library.style.display==='none';library.style.display=opening?'block':'none';if(opening){fillLibraryFilters();renderLibrary();setTimeout(()=>library.scrollIntoView({behavior:'smooth',block:'start'}),50)}});document.querySelectorAll('.question-type').forEach(b=>b.addEventListener('click',()=>{currentFilter=b.dataset.type;document.querySelectorAll('.question-type').forEach(x=>x.classList.toggle('active',x===b));renderLibrary()}));window.addEventListener('cmaZoneQuestionsUpdated',()=>{fillLibraryFilters();renderLibrary()});
   renderLibrary();
   restoreDraft();
 })();
