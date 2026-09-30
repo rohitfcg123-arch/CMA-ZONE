@@ -17,7 +17,7 @@
 </div></section>
 
 <section id="access" class="admin-section"><h2>Users & Access</h2><p>Admin-controlled approvals, roles, access groups, subscriptions, promo codes and usage limits.</p></section>
-<section id="questions" class="admin-section"><h2>Question Upload</h2><p>Central uploader for MCQ and subjective JSON. Validation should happen before publishing to the student portal.</p></section>
+<section id="questions" class="admin-section"><h2>Question Upload</h2><p>Central uploader for MCQ and subjective JSON. Validation should happen before publishing to the student portal.</p><div class="json-validator"><label class="json-file-label">Select Question JSON<input id="questionJsonFile" type="file" accept=".json,application/json"></label><button id="validateQuestionJson" class="btn btn-gold" type="button">VALIDATE JSON</button><div id="jsonValidationResult" class="json-validation-result"></div><small>Chapter and subject names must exactly match the CMA Zone master. Wrong or missing chapter = upload blocked.</small></div></section>
 <section id="pyq" class="admin-section"><h2>PYQ Manager</h2><p>Manage attempt-wise previous-year questions and connect them to the master subject/chapter/topic structure.</p></section>
 <section id="mock" class="admin-section"><h2>Mock Test Papers</h2><p>Create, edit and publish subjective mock papers.</p></section>
 <section id="exams" class="admin-section"><h2>Full Exam Builder</h2><p>Build the timed full-length exam engine from the same question database.</p></section>
@@ -25,4 +25,4 @@
 <section id="material" class="admin-section"><h2>Study Material</h2><p>Upload and organize learning material without putting large files directly into the website repository.</p></section>
 <section id="notifications" class="admin-section"><h2>Notifications</h2><p>Manage the student notification/bell content from one place.</p></section>
 <section id="reports" class="admin-section"><h2>Reports & Logs</h2><p>Admin reporting area for users, access, question uploads, attempts and platform activity.</p></section>
-</main><footer>© 2026 <strong>CMA Zone Admin Portal</strong></footer></body></html>
+</main><footer>© 2026 <strong>CMA Zone Admin Portal</strong></footer><script src="../assets/js/chapter-master.js"></script><script src="question-json-validator.js"></script></body></html>
