@@ -18,7 +18,32 @@
 </div></section>
 
 <section id="access" class="admin-section"><h2>Users & Access</h2><p>Admin-controlled approvals, roles, access groups, subscriptions, promo codes and usage limits.</p></section>
-<section id="questions" class="admin-section"><h2>Question Upload</h2><p>Central uploader for MCQ and subjective JSON. Validation should happen before publishing to the student portal.</p><div class="json-validator"><label class="json-file-label">Select Question JSON<input id="questionJsonFile" type="file" accept=".json,application/json"></label><button id="validateQuestionJson" class="btn btn-gold" type="button">VALIDATE JSON</button><button id="publishQuestionJson" class="btn btn-light" type="button" disabled>PUBLISH QUESTIONS</button><div id="jsonValidationResult" class="json-validation-result"></div><small>Subject + chapter are immutable master values. Any mismatch blocks publishing. One upload can contain MCQ + subjective/PYQ together; the system routes them automatically to MCQ/PYQ and Full-Length Exam.</small></div></section>
+<section id="questions" class="admin-section"><h2>Question Upload</h2><p>Central uploader for MCQ and subjective JSON. Validation should happen before publishing to the student portal.</p><div class="json-validator"><label class="json-file-label">Select Question JSON<input id="questionJsonFile" type="file" accept=".json,application/json"></label><button id="validateQuestionJson" class="btn btn-gold" type="button">VALIDATE JSON</button><button id="publishQuestionJson" class="btn btn-light" type="button" disabled>PUBLISH QUESTIONS</button><div id="jsonValidationResult" class="json-validation-result"></div><small>Subject + chapter are immutable master values. Any mismatch blocks publishing. One upload can contain MCQ + subjective/PYQ together; the system routes them automatically to MCQ/PYQ and Full-Length Exam.</small></div><div class="json-upload-preview" id="jsonUploadPreview" style="display:none">
+<div class="json-preview-head"><strong>JSON Preview</strong><span id="jsonPreviewMeta"></span></div>
+<pre id="jsonPreviewText"></pre>
+</div>
+<div class="question-library" id="questionLibrary" style="display:none">
+<div class="question-library-head"><div><h3>See Questions</h3><p>Review questions uploaded in this browser store and edit individual records.</p></div><div class="question-library-filters">
+<button class="btn btn-light question-filter active" data-filter="all" type="button">ALL</button>
+<button class="btn btn-light question-filter" data-filter="mcq" type="button">MCQ</button>
+<button class="btn btn-light question-filter" data-filter="subjective" type="button">SUBJECTIVE</button>
+</div></div>
+<div id="questionList" class="question-list"></div>
+</div>
+<div class="question-edit-modal" id="questionEditModal" style="display:none" aria-hidden="true">
+<div class="question-edit-backdrop" data-close-edit></div>
+<div class="question-edit-card" role="dialog" aria-modal="true" aria-labelledby="editQuestionTitle">
+<div class="question-edit-head"><div><span class="eyebrow">EDIT QUESTION</span><h3 id="editQuestionTitle">Edit Question</h3></div><button class="btn btn-light" type="button" data-close-edit>×</button></div>
+<div class="question-edit-grid">
+<label class="mcq-field"><span>Question Number</span><input id="editQuestionNo" type="text"></label>
+<label class="mcq-field"><span>Marks</span><input id="editMarks" type="text"></label>
+<label class="mcq-field"><span>Subject</span><select id="editSubject"></select></label>
+<label class="mcq-field"><span>Chapter</span><select id="editChapter"></select></label>
+</div>
+<label class="edit-content-label"><span>Question Content</span><textarea id="editQuestionContent" rows="16"></textarea></label>
+<div class="edit-warning"><b>Important:</b> Editing the main question content can change the original uploaded question. Please confirm before saving.</div>
+<div class="question-edit-actions"><button class="btn btn-light" type="button" data-close-edit>CANCEL</button><button class="btn btn-gold" id="saveQuestionEdit" type="button">SAVE CHANGES</button></div>
+</div></div></section>
 <section id="pyq" class="admin-section"><h2>PYQ Manager</h2><p>Manage attempt-wise previous-year questions and connect them to the master subject/chapter/topic structure.</p></section>
 <section id="mock" class="admin-section"><h2>Mock Test Papers</h2><p>Create, edit and publish subjective mock papers.</p></section>
 <section id="exams" class="admin-section"><h2>Full Exam Builder</h2><p>Build the timed full-length exam engine from the same question database.</p></section>
