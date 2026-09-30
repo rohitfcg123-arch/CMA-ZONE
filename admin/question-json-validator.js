@@ -120,12 +120,18 @@
   document.querySelectorAll('[data-close-edit]').forEach(x=>x.addEventListener('click',closeEditor));
   document.getElementById('editSubject')?.addEventListener('change',e=>populateChapterSelect(e.target.value,''));
   document.getElementById('saveQuestionEdit')?.addEventListener('click',saveEdit);
-  document.getElementById('previewQuestionJson')?.addEventListener('click',()=>{
-    if(!validated)return;
+  document.getElementById('previewQuestionJson')?.addEventListener('click',(event)=>{
+    event.preventDefault();
     try{
-      sessionStorage.setItem('cmaZoneQuestionPreviewData',JSON.stringify({data:validated, fileName:input.files[0]?.name||'Saved JSON'}));
-      window.location.href='question-preview.html';
-    }catch(e){alert('Could not save preview data in this browser.')}
+      let data=validated, fileName=input.files[0]?.name||'Saved JSON';
+      if(!data){
+        const draft=sessionStorage.getItem('cmaZoneQuestionUploadDraft');
+        if(draft){const d=JSON.parse(draft);if(d&&d.data){data=validateData(d.data);fileName=d.fileName||fileName;}}
+      }
+      if(!data||data.errors?.length){alert('Please validate the JSON first.');return;}
+      sessionStorage.setItem('cmaZoneQuestionPreviewData',JSON.stringify({data,fileName}));
+      window.location.assign('question-preview.html');
+    }catch(e){alert('Preview could not be opened: '+(e.message||'Unknown error'))}
   });
   window.addEventListener('cmaZoneQuestionsUpdated',renderLibrary);
   renderLibrary();
