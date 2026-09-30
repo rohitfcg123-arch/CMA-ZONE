@@ -98,7 +98,8 @@
       const n = stored.filter(q => q.questionType === 'subjective' && q.subject === subject.value &&
         (setup.chapter === 'all' || q.chapter === setup.chapter) &&
         Array.isArray(q.surfaces) && q.surfaces.includes(surface)).length;
-      status.textContent = (mode === 'mtp' ? 'MTP' : 'PYQ') + ' settings saved. ' + n + ' matching subjective question(s) are available in this browser store.';
+      status.textContent = (mode === 'mtp' ? 'MTP' : 'PYQ') + ' ready. ' + n + ' matching subjective question(s) are available. Starting exam…';
+      window.location.href = 'subjective-run.html';
       status.classList.add('is-ready');
     });
 
