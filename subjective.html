@@ -1,1 +1,40 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d3b3e"><title>Subjective Practice · CMA Zone</title><link rel="stylesheet" href="assets/css/theme.css"></head><body><header class="topbar"><div class="topbar-inner"><div><div class="brand">CMA <span>ZONE</span></div><span class="brand-sub">Subjective Practice</span></div><div class="session"><a class="btn btn-light" href="index.html">← Home</a></div></div></header><div class="cma-madeby">✨ Made by CMA Students, for CMA Students ✨</div><main><section class="hero"><span class="eyebrow">SUBJECTIVE PRACTICE CENTRE</span><h1>Practice Subjective Questions</h1><p>Choose what you want to practise.</p></section><section class="group-section"><div class="grid"><a class="subject-card" href="#"><div class="card-icon">PYQ</div><div class="card-copy"><h3>Previous Year Questions</h3><p>Attempt-wise subjective questions for practice.</p></div><span class="arrow">OPEN →</span></a><a class="subject-card" href="#"><div class="card-icon">MT</div><div class="card-copy"><h3>Mock Test Papers</h3><p>Practice full subjective mock papers.</p></div><span class="arrow">OPEN →</span></a></div></section></main><footer>© 2026 <strong>CMA Zone</strong></footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d3b3e"><title>Subjective Practice · CMA Zone</title>
+<link rel="stylesheet" href="assets/css/theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner"><div><div class="brand">CMA <span>ZONE</span></div><span class="brand-sub">Subjective Practice</span></div><div class="session"><a class="btn btn-light" href="index.html">← Home</a></div></div></header>
+<div class="cma-madeby">✨ Made by CMA Students, for CMA Students ✨</div>
+<main>
+<section class="hero"><span class="eyebrow">SUBJECTIVE PRACTICE CENTRE</span><h1>PYQ & Mock Test Papers</h1><p>Select the CMA level, subject and chapter. PYQ and MTP are kept separate.</p></section>
+
+<section class="group-section subjective-setup">
+ <div class="section-head"><div><span class="eyebrow">STEP 1</span><h2>Choose Practice Type</h2><p>Both Previous Year Questions and Mock Test Papers use the same subject and chapter master.</p></div><span class="section-index">SUBJECTIVE</span></div>
+ <div class="subjective-mode-grid">
+  <button class="subjective-mode active" data-mode="pyq"><b>PYQ</b><span>Previous Year Questions</span></button>
+  <button class="subjective-mode" data-mode="mtp"><b>MTP</b><span>Mock Test Papers</span></button>
+ </div>
+ <div class="subjective-form-grid">
+  <label class="mcq-field"><span>CMA Group</span><select id="groupSelect"><option value="">Select CMA Group</option><option value="foundation">CMA Foundation</option><option value="inter1">CMA Intermediate Group 1</option><option value="inter2">CMA Intermediate Group 2</option><option value="final3">CMA Final Group 3</option><option value="final4">CMA Final Group 4</option></select></label>
+  <label class="mcq-field"><span>Subject</span><select id="subjectSelect" disabled><option value="">Select Subject</option></select></label>
+  <label class="mcq-field"><span>Chapter</span><select id="chapterSelect" disabled><option value="all">All Chapters</option></select></label>
+  <label class="mcq-field" id="attemptWrap"><span>PYQ / Paper Attempt</span><select id="attemptSelect"><option>June 2024</option><option>December 2024</option><option>June 2025</option><option>December 2025</option><option>June 2026</option><option>December 2026</option></select></label>
+  <label class="mcq-field"><span>Exam Timing</span><select id="durationSelect"><option value="60">1 Hour</option><option value="90">1 Hour 30 Minutes</option><option value="120">2 Hours</option><option value="150">2 Hours 30 Minutes</option><option value="180" selected>3 Hours</option><option value="195">3 Hours 15 Minutes</option><option value="210">3 Hours 30 Minutes</option><option value="240">4 Hours</option></select></label>
+ </div>
+ <div class="subjective-summary" id="subjectiveSummary">PYQ · Select a group and subject · All Chapters · 3 Hours</div>
+ <button class="btn btn-gold mcq-start" id="startSubjective">START SUBJECTIVE PRACTICE →</button>
+ <div class="mcq-status" id="subjectiveStatus">Select your group, subject and chapter before starting.</div>
+</section>
+
+<section class="group-section">
+ <div class="section-head"><div><span class="eyebrow">CHAPTER MASTER</span><h2>Subject & Chapter Selection</h2><p>Chapter names are loaded from the CMA Zone master chapter database for the selected group.</p></div></div>
+ <div id="chapterPreview" class="subjective-chapter-preview"><span>Select a subject to view its chapters.</span></div>
+</section>
+</main>
+<footer>© 2026 <strong>CMA Zone</strong></footer>
+<script src="assets/js/chapter-master.js?v=17"></script>
+<script src="assets/js/subjective.js?v=1"></script>
+</body></html>
