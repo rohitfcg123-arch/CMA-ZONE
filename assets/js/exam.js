@@ -75,8 +75,10 @@
       const n = stored.filter(q => q.subject === s.value &&
         (setup.chapter === 'all' || q.chapter === setup.chapter) &&
         Array.isArray(q.surfaces) && q.surfaces.includes('full-exam')).length;
-      status.textContent = 'Full exam setup saved. ' + n + ' matching question(s) are available in this browser store.';
+      if(n===0){status.textContent='No matching questions are available for this selection.';status.classList.add('is-ready');return}
+      status.textContent = 'Full exam setup saved. ' + n + ' matching question(s) are available. Opening exam…';
       status.classList.add('is-ready');
+      setTimeout(()=>{location.href='exam-run.html'},150);
     });
 
     update();
