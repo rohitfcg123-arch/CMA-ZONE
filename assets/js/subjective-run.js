@@ -16,6 +16,7 @@
   const list = document.getElementById('qList');
   const submit = document.getElementById('submit');
   const status = document.getElementById('status');
+  const navigator = document.getElementById('subjectiveNavigator');
 
   document.getElementById('src').textContent =
     setup.mode === 'mtp' ? 'MTP' : 'PYQ · ' + (setup.attempt || 'All Attempts');
@@ -67,7 +68,8 @@
       submit.disabled = true;
       return;
     }
-    qs.forEach((x, i) => list.appendChild(renderQuestion(x, i)));
+    if(navigator){navigator.innerHTML='';qs.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.className='question-nav-btn';b.textContent=x.questionNo||String(i+1);b.onclick=()=>{const el=document.getElementById('subjective-q-'+i);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});};navigator.appendChild(b);});}
+    qs.forEach((x, i) => {const card=renderQuestion(x,i);card.id='subjective-q-'+i;list.appendChild(card);});
   };
 
   const finish = () => {
