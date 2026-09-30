@@ -1,4 +1,4 @@
-(() => {
+(() => {\n  const questionStore=window.CMAZoneQuestionStore;
   const params = new URLSearchParams(window.location.search);
   const group = params.get('group') || '';
   const subject = params.get('subject') || 'Selected Subject';
@@ -123,5 +123,5 @@
   populateAttempts();
   updateSourceUI();
   updateTimerUI();
-  status.textContent = 'Setup ready. Question data is read from the CMA Zone master database when the MCQ engine is connected.';
+  const stored=questionStore?questionStore.read():[];\n  const eligible=stored.filter(q=>q.questionType==='mcq' && q.subject===subject && (chapter.value==='all'||q.chapter===chapter.value) && (source.value==='bank'?q.surfaces.includes('mcq-bank'):q.surfaces.includes('mcq-pyq')));\n  status.textContent = questionStore ? ('Setup ready. '+eligible.length+' matching MCQ question(s) are published in this browser.') : 'Setup ready.';
 })();
