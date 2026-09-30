@@ -28,7 +28,7 @@
   subjectMeta.textContent = 'MCQ Portal · ' + (group ? group.replace(/(^|\s)\S/g, m => m.toUpperCase()) : 'CMA') + ' · Choose your practice settings below.';
 
   function getChapters() {
-    const normalize = (value) => String(value || '').trim().replace(/\\s+/g, ' ').toLowerCase();
+    const normalize = (value) => String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
     const groupData = chapterMaster[group] || {};
     if (groupData[subject]) return groupData[subject];
     const exactNormalized = Object.keys(groupData).find((name) => normalize(name) === normalize(subject));
