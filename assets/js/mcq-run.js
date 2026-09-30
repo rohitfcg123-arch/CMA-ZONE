@@ -11,6 +11,10 @@
   let wholeLeft = Number(setup.wholeDurationMinutes || 0) * 60;
   let questionLeft = Number(setup.perQuestionSeconds || 0);
   let interval = null;
+  const key=q=>q.id||[q.subject,q.chapter,q.attempt,q.questionNo,q.question].join('|');
+  const readList=(k)=>{try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}};
+  const writeList=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+  const isCorrect=(q,ans)=>{const c=q.correctAnswer??q.answer??q.correctOption??q.answerIndex; if(c==null)return false; if(typeof c==='number')return Number(ans)===c; const opts=getOptions(q); return String(c).trim().toLowerCase()===String(ans).trim().toLowerCase()||String(c).trim().toLowerCase()===String(opts[Number(ans)]??'').trim().toLowerCase()};
 
   const matches = q => q && q.questionType === 'mcq' &&
     q.subject === setup.subject &&
@@ -55,12 +59,13 @@
     $('prevBtn').disabled = index === 0;
     $('nextBtn').textContent = index === questions.length-1 ? 'SUBMIT PRACTICE →' : 'Next →';
     $('runStatus').textContent = '';
+    const bm=readList('cmaZoneMcqBookmarks');$('bookmarkCurrent').textContent=bm.includes(key(q))?'★ Bookmarked':'☆ Bookmark';
     resetQuestionTimer();
   };
 
   const finish = reason => {
     clearInterval(interval);
-    const result = { setup, total: questions.length, answered: Object.keys(answers).length, answers, reason, completedAt: new Date().toISOString() };
+    const wrong=questions.filter((q,i)=>answers[i]!=null&&!isCorrect(q,answers[i])).map(key);writeList('cmaZoneMcqWrong',wrong);const result = { setup, total: questions.length, answered: Object.keys(answers).length, answers, reason, completedAt: new Date().toISOString() };
     sessionStorage.setItem('cmaZoneMcqResult', JSON.stringify(result));
     $('questionText').innerHTML = '<h3>Practice completed</h3><p>You answered ' + result.answered + ' of ' + result.total + ' questions.</p>';
     $('options').innerHTML = '';
@@ -94,6 +99,9 @@
   const init = () => {
     const all = store ? store.read() : [];
     questions = all.filter(matches);
+    const special=setup.special;
+    if(special==='bookmark'){const bm=new Set(readList('cmaZoneMcqBookmarks'));questions=questions.filter(q=>bm.has(key(q)))}
+    if(special==='wrong'){const wrong=new Set(readList('cmaZoneMcqWrong'));questions=questions.filter(q=>wrong.has(key(q)))}
     if (setup.order === 'random') questions = shuffle(questions);
     if (setup.questionCount && setup.questionCount !== 'all') questions = questions.slice(0, Number(setup.questionCount));
     if (!questions.length) {
@@ -113,6 +121,8 @@
     if (setup.timerMode !== 'none') interval = setInterval(tick, 1000);
   };
 
+  $('bookmarkCurrent').onclick=()=>{const q=questions[index],arr=readList('cmaZoneMcqBookmarks'),k=key(q),i=arr.indexOf(k);if(i>=0)arr.splice(i,1);else arr.push(k);writeList('cmaZoneMcqBookmarks',arr);render()};
+  $('clearAnswer').onclick=()=>{delete answers[index];render()};
   $('prevBtn').onclick = () => { if (index > 0) { index--; render(); } };
   $('nextBtn').onclick = () => { if (index < questions.length-1) { index++; render(); } else finish('manual'); };
   init();
