@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d3b3e"><title>Login · CMA Zone</title><link rel="stylesheet" href="assets/css/theme.css"></head><body>
+<header class="topbar"><div class="topbar-inner"><div><div class="brand">CMA <span>ZONE</span></div><span class="brand-sub">SECURE LOGIN</span></div><div class="session"><a class="btn btn-light" href="index.html">Home</a></div></div></header>
+<main><section class="auth-card"><span class="eyebrow">CMA ZONE ACCOUNT</span><h1>Login</h1><p>Sign in with your Google account to continue to CMA Zone.</p><button id="googleLoginBtn" class="btn btn-gold auth-google-btn" type="button">Continue with Google</button><div id="loginMessage" class="auth-message"></div></section></main><footer>© 2026 <strong>CMA Zone</strong></footer>
+<script type="module" src="assets/js/firebase-auth.js"></script><script type="module">
+const btn=document.getElementById("googleLoginBtn"), msg=document.getElementById("loginMessage");
+window.addEventListener("cma-auth-changed",e=>{if(e.detail){window.location.replace("index.html");}});
+btn.addEventListener("click",async()=>{btn.disabled=true;msg.textContent="Opening Google sign-in…";try{await window.CMAZoneFirebase.signInGoogle();}catch(err){btn.disabled=false;if(err.code!=="auth/popup-closed-by-user")msg.textContent="Google sign-in failed: "+(err.message||err.code);else msg.textContent="Sign-in cancelled.";}});</script></body></html>
