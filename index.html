@@ -1,54 +1,17 @@
 <!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d3b3e"><title>CMA Zone</title><link rel="stylesheet" href="assets/css/theme.css"></head><body>
 <div class="cma-update-strip"><b>UPDATE #2 — Home design updated</b><span>CMA Zone Home is now aligned with the supplied master cream, teal and gold theme.</span></div>
 <header class="topbar"><div class="topbar-inner"><div><div class="brand">CMA <span>ZONE</span></div><span class="brand-sub">MCQ Practice · Test Preparation</span></div><div class="session"><a class="btn btn-gold" href="#plans">💳 Buy Subscription</a><span class="nav-email">rohit.fcg123@gmail.com</span><button class="btn btn-light">Login</button></div></div></header>
-<div class="cma-madeby">✨ Made by CMA Students, for CMA Students ✨</div>
-<main>
+<div class="cma-madeby">✨ Made by CMA Students, for CMA Students ✨</div><main>
 <section class="hero"><span class="eyebrow">CMA STUDY PLATFORM</span><h1>Study. Practice. Improve.</h1><p>Choose your CMA level and subject. Your progress, attempts and access are managed securely through the CMA Zone platform.</p><div class="hero-actions"><span class="hero-pill">✓ Full access is free for everyone right now</span><span class="hero-pill">✓ Group-wise access</span><span class="hero-pill">✓ MCQ Bank + PYQ</span></div></section>
 <div class="dashboard"><div class="info-card"><h3>How it works</h3><p>Browse your CMA groups and subjects from one consistent interface. MCQ practice, PYQs and full-length exams will use the same design system across every subject.</p></div><div class="access-card"><div class="access-title">Your Access</div><div class="access-sub">Login to see your active groups and attempt usage.</div><div class="access-tags"><span class="access-tag">Foundation</span><span class="access-tag">Inter Group 1</span><span class="access-tag">Final Group 3</span></div></div></div>
 <div class="offer-box" id="plans"><div class="offer-copy"><strong>🔥 Subscription Offers</strong><div class="offer-price"><span class="old">₹199</span><span class="new">₹99</span></div></div><a href="#" class="btn btn-gold">View Plans</a></div>
-
-<section class="group-section">
-<div class="section-head"><div><span class="eyebrow">MCQ PRACTICE CENTRE</span><h2>Practice MCQ</h2><p>First select a CMA group. Then select a subject; only that subject's details will appear below.</p></div><span class="section-index">PRACTICE MCQ</span></div>
-<select id="practiceGroup" style="width:100%;padding:13px;background:#fff;border:1px solid var(--border);border-radius:10px;color:var(--teal);font-weight:850">
-<option value="">Select CMA Group</option><option value="foundation">CMA Foundation</option><option value="inter1">CMA Intermediate Group 1</option><option value="inter2">CMA Intermediate Group 2</option><option value="final3">CMA Final Group 3</option><option value="final4">CMA Final Group 4</option>
-</select>
-<div id="subjectArea" style="display:none;margin-top:12px">
-<select id="practiceSubject" style="width:100%;padding:13px;background:#fff;border:1px solid var(--border);border-radius:10px;color:var(--teal);font-weight:850">
-<option value="">Select Subject</option>
-</select>
-</div>
-<div id="subjectDetails" class="grid" style="margin-top:12px"></div>
-</section>
-
-<section class="group-section">
-<div class="section-head"><div><span class="eyebrow">FULL LENGTH EXAM</span><h2>📝 Full-Length CMA Exam</h2><p>Timed exam · navigation · review · submission · results · bell alerts</p></div><span class="section-index">EXAM ENGINE</span></div>
-<a class="subject-card" href="#"><div class="card-icon">EX</div><div class="card-copy"><h3>Start Full Exam</h3><p>The complete exam interface will use the same master CMA Zone theme.</p></div><span class="arrow">START →</span></a>
-</section>
-
-<section class="support"><div><h3>Need help or want to share feedback?</h3><p>Found an issue, wrong answer, or have a suggestion? We want to hear it.</p></div><div class="support-actions"><a href="#">📧 Email</a><a href="#">💬 WhatsApp</a></div></section>
-</main><footer>© 2026 <strong>CMA Zone</strong></footer>
+<section class="group-section"><div class="section-head"><div><span class="eyebrow">MCQ PRACTICE CENTRE</span><h2>Practice MCQ</h2><p>Select a CMA group. All subjects in that group will appear below.</p></div><span class="section-index">PRACTICE MCQ</span></div>
+<select id="practiceGroup" style="width:100%;padding:13px;background:#fff;border:1px solid var(--border);border-radius:10px;color:var(--teal);font-weight:850"><option value="">Select CMA Group</option><option value="foundation">CMA Foundation</option><option value="inter1">CMA Intermediate Group 1</option><option value="inter2">CMA Intermediate Group 2</option><option value="final3">CMA Final Group 3</option><option value="final4">CMA Final Group 4</option></select>
+<div id="subjectDetails" class="grid" style="margin-top:12px"></div></section>
+<section class="group-section"><div class="section-head"><div><span class="eyebrow">FULL LENGTH EXAM</span><h2>📝 Full-Length CMA Exam</h2><p>Timed exam · navigation · review · submission · results · bell alerts</p></div><span class="section-index">EXAM ENGINE</span></div><a class="subject-card" href="#"><div class="card-icon">EX</div><div class="card-copy"><h3>Start Full Exam</h3><p>The complete exam interface will use the same master CMA Zone theme.</p></div><span class="arrow">START →</span></a></section>
+<section class="support"><div><h3>Need help or want to share feedback?</h3><p>Found an issue, wrong answer, or have a suggestion? We want to hear it.</p></div><div class="support-actions"><a href="#">📧 Email</a><a href="#">💬 WhatsApp</a></div></section></main><footer>© 2026 <strong>CMA Zone</strong></footer>
 <script>
-const subjects={
- foundation:["Fundamentals of Financial Accounting","Fundamentals of Business Laws and Business Communication","Fundamentals of Business Mathematics and Statistics","Fundamentals of Business Economics and Management"],
- inter1:["Business Laws and Ethics","Financial Accounting","Direct and Indirect Taxation","Cost Accounting"],
- inter2:["Corporate Accounting and Auditing","Financial Management and Business Data Analytics","Management Accounting","Operations Management and Strategic Management"],
- final3:["Strategic Financial Management","Direct Tax Laws and International Taxation","Strategic Cost Management","Corporate Financial Reporting"],
- final4:["Corporate and Economic Laws","Indirect Tax Laws and Practice","Cost and Management Audit","Strategic Performance Management and Business Valuation"],
-};
-const group=document.getElementById("practiceGroup"), area=document.getElementById("subjectArea"), select=document.getElementById("practiceSubject"), details=document.getElementById("subjectDetails");
-function resetSubject(){select.innerHTML='<option value="">Select Subject</option>'; details.innerHTML=""; area.style.display="none";}
-group.addEventListener("change",()=>{
- resetSubject();
- const list=subjects[group.value]||[];
- if(!list.length)return;
- list.forEach((name,i)=>{const o=document.createElement("option");o.value=name;o.textContent=name;select.appendChild(o);});
- area.style.display="block";
-});
-select.addEventListener("change",()=>{
- details.innerHTML="";
- if(!select.value)return;
- const card=document.createElement("a"); card.className="subject-card"; card.href="#";
- card.innerHTML='<div class="card-icon">'+String(select.selectedIndex).padStart(2,"0")+'</div><div class="card-copy"><h3>'+select.value+'</h3><p>Practice MCQ</p></div><span class="arrow">PRACTICE →</span>';
- details.appendChild(card);
-});
+const subjects={foundation:["Fundamentals of Financial Accounting","Fundamentals of Business Laws and Business Communication","Fundamentals of Business Mathematics and Statistics","Fundamentals of Business Economics and Management"],inter1:["Business Laws and Ethics","Financial Accounting","Direct and Indirect Taxation","Cost Accounting"],inter2:["Corporate Accounting and Auditing","Financial Management and Business Data Analytics","Management Accounting","Operations Management and Strategic Management"],final3:["Strategic Financial Management","Direct Tax Laws and International Taxation","Strategic Cost Management","Corporate Financial Reporting"],final4:["Corporate and Economic Laws","Indirect Tax Laws and Practice","Cost and Management Audit","Strategic Performance Management and Business Valuation"]};
+const group=document.getElementById("practiceGroup"),details=document.getElementById("subjectDetails");
+group.addEventListener("change",()=>{details.innerHTML="";(subjects[group.value]||[]).forEach((name,i)=>{const card=document.createElement("a");card.className="subject-card";card.href="#";card.innerHTML='<div class="card-icon">'+String(i+1).padStart(2,"0")+'</div><div class="card-copy"><h3>'+name+'</h3><p>Practice MCQ · Click Here to Start Exam</p></div><span class="arrow">CLICK HERE →</span>';details.appendChild(card);});});
 </script></body></html>
