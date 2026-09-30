@@ -73,7 +73,9 @@
     });
 
     group.addEventListener('change', loadSubjects);
+    group.addEventListener('input', loadSubjects);
     subject.addEventListener('change', loadChapters);
+    subject.addEventListener('input', loadChapters);
     chapter.addEventListener('change', updateSummary);
     if (attempt) attempt.addEventListener('change', updateSummary);
     if (duration) duration.addEventListener('change', updateSummary);
@@ -103,6 +105,16 @@
     if (attemptWrap) attemptWrap.style.display = '';
     loadSubjects();
     updateSummary();
+
+    // Re-hydrate after mobile browser form-state restoration.
+    const hydrate = () => {
+      if (group.value) loadSubjects();
+      if (subject.value) loadChapters();
+      updateSummary();
+    };
+    window.addEventListener('pageshow', hydrate);
+    setTimeout(hydrate, 0);
+    setTimeout(hydrate, 250);
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
