@@ -18,7 +18,7 @@
 </div></section>
 
 <section id="access" class="admin-section"><h2>Users & Access</h2><p>Admin-controlled approvals, roles, access groups, subscriptions, promo codes and usage limits.</p></section>
-<section id="questions" class="admin-section"><h2>Question Upload</h2><p>Central uploader for MCQ and subjective JSON. Validation should happen before publishing to the student portal.</p><div class="json-validator"><label class="json-file-label">Select Question JSON<input id="questionJsonFile" type="file" accept=".json,application/json"></label><button id="validateQuestionJson" class="btn btn-gold" type="button">VALIDATE JSON</button><button id="previewQuestionJson" class="btn btn-light" type="button" disabled>PREVIEW</button><button id="publishQuestionJson" class="btn btn-light" type="button" disabled>PUBLISH QUESTIONS</button><div id="jsonValidationResult" class="json-validation-result"></div><small>Subject + chapter are immutable master values. Any mismatch blocks publishing. One upload can contain MCQ + subjective/PYQ together; the system routes them automatically to MCQ/PYQ and Full-Length Exam.</small></div><div class="json-upload-preview" id="jsonUploadPreview" style="display:none">
+<section id="questions" class="admin-section"><h2>Question Upload</h2><p>Central uploader for MCQ and subjective JSON. Validation should happen before publishing to the student portal.</p><div class="json-validator"><label class="json-file-label">Select Question JSON<input id="questionJsonFile" type="file" accept=".json,application/json"></label><button id="validateQuestionJson" class="btn btn-gold" type="button">VALIDATE JSON</button><button id="previewQuestionJson" class="btn btn-light" type="button" onclick="window.location.href='question-preview.html'">PREVIEW</button><button id="publishQuestionJson" class="btn btn-light" type="button" disabled>PUBLISH QUESTIONS</button><div id="jsonValidationResult" class="json-validation-result"></div><small>Subject + chapter are immutable master values. Any mismatch blocks publishing. One upload can contain MCQ + subjective/PYQ together; the system routes them automatically to MCQ/PYQ and Full-Length Exam.</small></div><div class="json-upload-preview" id="jsonUploadPreview" style="display:none">
 <div class="json-preview-head"><strong>JSON Preview</strong><span id="jsonPreviewMeta"></span></div>
 <pre id="jsonPreviewText"></pre>
 </div>
@@ -51,7 +51,7 @@
 <section id="material" class="admin-section"><h2>Study Material</h2><p>Upload and organize learning material without putting large files directly into the website repository.</p></section>
 <section id="notifications" class="admin-section"><h2>Notifications</h2><p>Manage the student notification/bell content from one place.</p></section>
 <section id="reports" class="admin-section"><h2>Reports & Logs</h2><p>Admin reporting area for users, access, question uploads, attempts and platform activity.</p></section>
-</main><footer>© 2026 <strong>CMA Zone Admin Portal</strong></footer><script src="../assets/js/chapter-master.js?v=18"></script><script src="../assets/js/question-store.js?v=1"></script><script src="question-json-validator.js?v=4"></script>
+</main><footer>© 2026 <strong>CMA Zone Admin Portal</strong></footer><script src="../assets/js/chapter-master.js?v=18"></script><script src="../assets/js/question-store.js?v=1"></script><script src="question-json-validator.js?v=5"></script>
 <script type="module" src="../assets/js/firebase-auth.js"></script>
 <script type="module">
 const ADMIN_EMAIL="rohit.fcg123@gmail.com";
