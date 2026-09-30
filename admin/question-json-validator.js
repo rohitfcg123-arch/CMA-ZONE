@@ -11,7 +11,24 @@
   function getField(q,n){for(const x of n)if(q&&q[x]!=null&&String(q[x]).trim())return String(q[x]).trim();return''}
   function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
   function setLoading(btn,on,label){if(!btn)return;btn.disabled=on;btn.dataset.oldLabel=btn.dataset.oldLabel||btn.textContent;btn.textContent=on?'LOADING…':(label||btn.dataset.oldLabel)}
+  function saveDraft(data,fileName){try{sessionStorage.setItem('cmaZoneQuestionUploadDraft',JSON.stringify({data,fileName, savedAt:new Date().toISOString()}))}catch(e){}}
+  function clearDraft(){sessionStorage.removeItem('cmaZoneQuestionUploadDraft')}
   function showPreview(data,file){preview.style.display='block';previewMeta.textContent=file.name+' · '+(getQuestions(data)?.length||0)+' question records';let raw=JSON.stringify(data,null,2);previewText.textContent=raw.length>7000?raw.slice(0,7000)+'\n… [preview truncated]':raw}
+  function restoreDraft(){
+    try{
+      const raw=sessionStorage.getItem('cmaZoneQuestionUploadDraft'); if(!raw)return;
+      const d=JSON.parse(raw); if(!d||!d.data)return;
+      validated=validateData(d.data); if(validated.errors.length){showErrors(validated.errors);return}
+      const fake={name:d.fileName||'Saved JSON draft'}; showPreview(d.data,fake);
+      input.dataset.restored='1';
+      const rows=validated.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:validated.topSubject,attempt:validated.topAttempt}));
+      const mcq=rows.filter(q=>q.questionType==='mcq').length,sub=rows.length-mcq,pyq=rows.filter(q=>q.surfaces.includes('mcq-pyq')||q.surfaces.includes('subjective-pyq')).length;
+      output.className='json-validation-result success';
+      output.innerHTML='<strong>SAVED DRAFT RESTORED.</strong> '+rows.length+' questions · '+mcq+' MCQ · '+sub+' Subjective · '+pyq+' PYQ. You can preview or publish without uploading the JSON again.';
+      publishBtn.disabled=false;
+      const pb=document.getElementById('previewQuestionJson'); if(pb)pb.disabled=false;
+    }catch(e){}
+  }
 
   function validateData(data){
     const qs=getQuestions(data);if(!Array.isArray(qs)||!qs.length)return{errors:['No questions array found. Expected questions/questionBank/items/data.']};
@@ -22,7 +39,7 @@
   function showErrors(es){output.className='json-validation-result error';output.innerHTML='<strong>UPLOAD BLOCKED — exact master validation failed.</strong><ul>'+es.slice(0,50).map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+(es.length>50?'<p>Showing first 50 errors. Fix every invalid record.</p>':'');publishBtn.disabled=true}
 
   function validate(){
-    validated=null;publishBtn.disabled=true;output.className='json-validation-result';output.textContent='';
+    validated=null;publishBtn.disabled=true;const pb=document.getElementById('previewQuestionJson');if(pb)pb.disabled=true;output.className='json-validation-result';output.textContent='';
     if(!input.files.length){output.classList.add('error');output.textContent='Select a JSON file first.';return}
     setLoading(validateBtn,true);
     const reader=new FileReader();
@@ -30,6 +47,8 @@
       showPreview(data,input.files[0]);
       const r=validateData(data);if(r.errors.length){setLoading(validateBtn,false,'VALIDATE JSON');showErrors(r.errors);return}
       validated=r;
+      saveDraft(data,input.files[0].name);
+      const pb=document.getElementById('previewQuestionJson');if(pb)pb.disabled=false;
       const rows=r.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:r.topSubject,attempt:r.topAttempt})),mcq=rows.filter(q=>q.questionType==='mcq').length,sub=rows.length-mcq,pyq=rows.filter(q=>q.surfaces.includes('mcq-pyq')||q.surfaces.includes('subjective-pyq')).length;
       setLoading(validateBtn,false,'VALIDATE JSON');
       output.className='json-validation-result success';output.innerHTML='<strong>VALIDATION PASSED.</strong> '+rows.length+' questions · '+mcq+' MCQ · '+sub+' Subjective · '+pyq+' PYQ. Exact subject/chapter names confirmed. <b>Publish</b> routes each record automatically.';publishBtn.disabled=false;
@@ -43,6 +62,7 @@
     setTimeout(()=>{
       const old=CMAZoneQuestionStore.read(),rows=validated.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:validated.topSubject,attempt:validated.topAttempt}));
       CMAZoneQuestionStore.write(old.concat(rows));
+      clearDraft();
       output.className='json-validation-result success';output.innerHTML='<strong>PUBLISHED.</strong> '+rows.length+' questions added. MCQ/PYQ/Subjective/Full-Length routing is stored per question. Total stored: '+CMAZoneQuestionStore.count()+'.';
       setLoading(publishBtn,false,'PUBLISH QUESTIONS');publishBtn.disabled=true;renderLibrary();
     },250)
@@ -95,11 +115,19 @@
   }
 
   validateBtn.addEventListener('click',validate);publishBtn.addEventListener('click',publish);
-  input.addEventListener('change',()=>{validated=null;publishBtn.disabled=true;output.className='json-validation-result';output.textContent=input.files[0]?'File selected. Click Validate JSON.':'';if(!input.files.length)preview.style.display='none'});
+  input.addEventListener('change',()=>{validated=null;sessionStorage.removeItem('cmaZoneQuestionUploadDraft');publishBtn.disabled=true;output.className='json-validation-result';output.textContent=input.files[0]?'File selected. Click Validate JSON.':'';if(!input.files.length)preview.style.display='none'});
   document.querySelectorAll('.question-filter').forEach(b=>b.addEventListener('click',()=>{currentFilter=b.dataset.filter;document.querySelectorAll('.question-filter').forEach(x=>x.classList.toggle('active',x===b));renderLibrary()}));
   document.querySelectorAll('[data-close-edit]').forEach(x=>x.addEventListener('click',closeEditor));
   document.getElementById('editSubject')?.addEventListener('change',e=>populateChapterSelect(e.target.value,''));
   document.getElementById('saveQuestionEdit')?.addEventListener('click',saveEdit);
+  document.getElementById('previewQuestionJson')?.addEventListener('click',()=>{
+    if(!validated)return;
+    try{
+      sessionStorage.setItem('cmaZoneQuestionPreviewData',JSON.stringify({data:validated, fileName:input.files[0]?.name||'Saved JSON'}));
+      window.location.href='question-preview.html';
+    }catch(e){alert('Could not save preview data in this browser.')}
+  });
   window.addEventListener('cmaZoneQuestionsUpdated',renderLibrary);
   renderLibrary();
+  restoreDraft();
 })();
