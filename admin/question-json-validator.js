@@ -52,6 +52,7 @@
       const pb=document.getElementById('previewQuestionJson');if(pb)pb.disabled=false;
       const rows=r.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:r.topSubject,attempt:r.topAttempt})),mcq=rows.filter(q=>q.questionType==='mcq').length,sub=rows.length-mcq,pyq=rows.filter(q=>q.surfaces.includes('mcq-pyq')||q.surfaces.includes('subjective-pyq')).length;
       setLoading(validateBtn,false,'VALIDATE JSON');
+      renderLibrary();
       output.className='json-validation-result success';output.innerHTML='<strong>VALIDATION PASSED.</strong> '+rows.length+' questions · '+mcq+' MCQ · '+sub+' Subjective · '+pyq+' PYQ. Exact subject/chapter names confirmed. <b>Publish</b> routes each record automatically.';publishBtn.disabled=false;
     };
     reader.readAsText(input.files[0])
@@ -71,7 +72,10 @@
 
   function renderLibrary(){
     if(!library||!list)return;
-    const all=CMAZoneQuestionStore.read();
+    const stored=CMAZoneQuestionStore.read();
+    const draftRows=validated&&Array.isArray(validated.qs)?validated.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:validated.topSubject,attempt:validated.topAttempt})):[];
+    const seen=new Set(), all=[];
+    stored.concat(draftRows).forEach(q=>{const key=q.id||[q.questionNo,q.subject,q.chapter,q.attempt,String(q.question||q.questionHtml||q.text||'')].join('|');if(!seen.has(key)){seen.add(key);all.push(q)}});
     const rows=all.filter(q=>(currentFilter==='all'||q.questionType===currentFilter)&&(!librarySearch||String(q.questionNo||'').toLowerCase().includes(librarySearch)||String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').toLowerCase().includes(librarySearch))&&(!librarySubject||q.subject===librarySubject)&&(!libraryAttempt||String(q.attempt||q.source||'')===libraryAttempt)&&(!libraryChapter||q.chapter===libraryChapter));
     library.style.display='block';
     list.innerHTML=rows.length?rows.map((q,i)=>{
