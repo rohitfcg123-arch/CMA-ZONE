@@ -1,4 +1,4 @@
-(() => {\n  const questionStore=window.CMAZoneQuestionStore;
+(() => {\n  const questionStore=window.CMAZoneQuestionStore;\n  const questionStore=window.CMAZoneQuestionStore;
   const params = new URLSearchParams(window.location.search);
   const group = params.get('group') || '';
   const subject = params.get('subject') || 'Selected Subject';
