@@ -22,29 +22,39 @@
         ' · 15 MCQ + Subjective Questions';
     };
 
-    g.addEventListener('change', () => {
+    const loadSubjects = () => {
       const names = Object.keys(data());
+      const previous = s.value;
       s.innerHTML = '<option value="">Select Subject</option>';
       names.forEach(name => {
         const o = document.createElement('option');
         o.value = name; o.textContent = name; s.appendChild(o);
       });
+      if (previous && names.includes(previous)) s.value = previous;
       s.disabled = names.length === 0;
       c.innerHTML = '<option value="all">All Chapters</option>';
       c.disabled = true;
       update();
-    });
+      if (s.value) loadChapters();
+    };
 
-    s.addEventListener('change', () => {
+    const loadChapters = () => {
       const chapters = Array.isArray(data()[s.value]) ? data()[s.value] : [];
+      const previous = c.value;
       c.innerHTML = '<option value="all">All Chapters</option>';
       chapters.forEach(name => {
         const o = document.createElement('option');
         o.value = name; o.textContent = name; c.appendChild(o);
       });
+      if (previous && (previous === 'all' || chapters.includes(previous))) c.value = previous;
       c.disabled = chapters.length === 0;
       update();
-    });
+    };
+
+    g.addEventListener('change', loadSubjects);
+    g.addEventListener('input', loadSubjects);
+    s.addEventListener('change', loadChapters);
+    s.addEventListener('input', loadChapters);
 
     [c,a,d].forEach(x => x && x.addEventListener('change', update));
 
@@ -70,6 +80,16 @@
     });
 
     update();
+    // Mobile browsers can restore a select value after DOMContentLoaded.
+    // Re-hydrate once the page is visible so Subject/Chapter never stay disabled incorrectly.
+    const hydrate = () => {
+      if (g.value) loadSubjects();
+      if (s.value) loadChapters();
+      update();
+    };
+    window.addEventListener('pageshow', hydrate);
+    setTimeout(hydrate, 0);
+    setTimeout(hydrate, 250);
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
