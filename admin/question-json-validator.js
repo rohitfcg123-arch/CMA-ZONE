@@ -76,7 +76,7 @@
     const draftRows=validated&&Array.isArray(validated.qs)?validated.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:validated.topSubject,attempt:validated.topAttempt})):[];
     const seen=new Set(), all=[];
     stored.concat(draftRows).forEach(q=>{const key=q.id||[q.questionNo,q.subject,q.chapter,q.attempt,String(q.question||q.questionHtml||q.text||'')].join('|');if(!seen.has(key)){seen.add(key);all.push(q)}});
-    const rows=all.filter(q=>(currentFilter==='all'||q.questionType===currentFilter)&&(!librarySearch||String(q.questionNo||'').toLowerCase().includes(librarySearch)||String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').toLowerCase().includes(librarySearch))&&(!librarySubject||q.subject===librarySubject)&&(!libraryAttempt||String(q.attempt||q.source||'')===libraryAttempt)&&(!libraryChapter||q.chapter===libraryChapter));
+    const rows=all.filter(q=>(currentFilter==='all'||(currentFilter==='pyq' ? String(q.source||'').toUpperCase().includes('PYQ') : q.questionType===currentFilter))&&(!librarySearch||String(q.questionNo||'').toLowerCase().includes(librarySearch)||String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').toLowerCase().includes(librarySearch))&&(!librarySubject||q.subject===librarySubject)&&(!libraryAttempt||String(q.attempt||q.source||'')===libraryAttempt)&&(!libraryChapter||q.chapter===libraryChapter));
     library.style.display='block';
     list.innerHTML=rows.length?rows.map((q,i)=>{
       const previewText=String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,220);
@@ -141,7 +141,7 @@ document.getElementById('questionLibrarySearch')?.addEventListener('input',e=>{l
       window.location.assign('question-preview.html');
     }catch(e){alert('Preview could not be opened: '+(e.message||'Unknown error'))}
   });
-  window.addEventListener('cmaZoneQuestionsUpdated',()=>{fillLibraryFilters();renderLibrary()});
+  document.getElementById('toggleQuestionLibrary')?.addEventListener('click',()=>{library.style.display=library.style.display==='none'?'block':'none';fillLibraryFilters();renderLibrary()});document.querySelectorAll('.question-type').forEach(b=>b.addEventListener('click',()=>{currentFilter=b.dataset.type;document.querySelectorAll('.question-type').forEach(x=>x.classList.toggle('active',x===b));renderLibrary()}));window.addEventListener('cmaZoneQuestionsUpdated',()=>{fillLibraryFilters();renderLibrary()});
   renderLibrary();
   restoreDraft();
 })();
