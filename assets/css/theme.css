@@ -84,3 +84,10 @@ footer{max-width:1180px;margin:auto;padding:0 20px 30px;text-align:center;color:
   .subjective-submit-bar{padding:11px 12px}
   .subjective-submit-bar .btn{white-space:nowrap}
 }
+
+/* MCQ option cards: vertical A/B/C/D */
+.mcq-options{display:flex;flex-direction:column;gap:10px;margin-top:16px;width:100%}
+.mcq-option{display:flex;align-items:flex-start;gap:10px;width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:11px;background:var(--paper);color:var(--text);cursor:pointer;line-height:1.5;box-sizing:border-box}
+.mcq-option:hover{border-color:var(--gold);background:var(--paper2)}
+.mcq-option input{flex:0 0 auto;margin-top:4px;accent-color:var(--teal)}
+.mcq-option span{display:block;min-width:0;flex:1}
