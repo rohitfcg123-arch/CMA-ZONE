@@ -8,9 +8,16 @@
 <div class="offer-box" id="plans"><div class="offer-copy"><strong>🔥 Subscription Offers</strong><div class="offer-price"><span class="old">₹199</span><span class="new">₹99</span></div></div><a href="#" class="btn btn-gold">View Plans</a></div>
 
 <section class="group-section">
-<div class="section-head"><div><span class="eyebrow">MCQ PRACTICE CENTRE</span><h2>Practice MCQ</h2><p>Choose a CMA group and then select a subject. Every subject will use this exact same visual template.</p></div><span class="section-index">PRACTICE MCQ</span></div>
-<select style="width:100%;padding:13px;background:#fff;border:1px solid var(--border);border-radius:10px;color:var(--teal);font-weight:850"><option>Select CMA Group</option><option>CMA Foundation</option><option>CMA Intermediate Group 1</option><option>CMA Intermediate Group 2</option><option>CMA Final Group 3</option><option>CMA Final Group 4</option></select>
-<div class="grid" style="margin-top:12px"><a class="subject-card" href="#"><div class="card-icon">01</div><div class="card-copy"><h3>Strategic Financial Management</h3><p>Practice MCQ</p></div><span class="arrow">PRACTICE →</span></a><a class="subject-card" href="#"><div class="card-icon">02</div><div class="card-copy"><h3>Direct Tax &amp; International Laws</h3><p>Practice MCQ</p></div><span class="arrow">PRACTICE →</span></a><a class="subject-card" href="#"><div class="card-icon">03</div><div class="card-copy"><h3>Corporate &amp; Economic Laws</h3><p>Practice MCQ</p></div><span class="arrow">PRACTICE →</span></a></div>
+<div class="section-head"><div><span class="eyebrow">MCQ PRACTICE CENTRE</span><h2>Practice MCQ</h2><p>First select a CMA group. Then select a subject; only that subject's details will appear below.</p></div><span class="section-index">PRACTICE MCQ</span></div>
+<select id="practiceGroup" style="width:100%;padding:13px;background:#fff;border:1px solid var(--border);border-radius:10px;color:var(--teal);font-weight:850">
+<option value="">Select CMA Group</option><option value="foundation">CMA Foundation</option><option value="inter1">CMA Intermediate Group 1</option><option value="inter2">CMA Intermediate Group 2</option><option value="final3">CMA Final Group 3</option><option value="final4">CMA Final Group 4</option>
+</select>
+<div id="subjectArea" style="display:none;margin-top:12px">
+<select id="practiceSubject" style="width:100%;padding:13px;background:#fff;border:1px solid var(--border);border-radius:10px;color:var(--teal);font-weight:850">
+<option value="">Select Subject</option>
+</select>
+</div>
+<div id="subjectDetails" class="grid" style="margin-top:12px"></div>
 </section>
 
 <section class="group-section">
@@ -19,4 +26,29 @@
 </section>
 
 <section class="support"><div><h3>Need help or want to share feedback?</h3><p>Found an issue, wrong answer, or have a suggestion? We want to hear it.</p></div><div class="support-actions"><a href="#">📧 Email</a><a href="#">💬 WhatsApp</a></div></section>
-</main><footer>© 2026 <strong>CMA Zone</strong></footer></body></html>
+</main><footer>© 2026 <strong>CMA Zone</strong></footer>
+<script>
+const subjects={
+ foundation:["Fundamentals of Financial Accounting","Fundamentals of Business Laws and Business Communication","Fundamentals of Business Mathematics and Statistics","Fundamentals of Business Economics and Management"],
+ inter1:["Business Laws and Ethics","Financial Accounting","Direct and Indirect Taxation","Cost Accounting"],
+ inter2:["Corporate Accounting and Auditing","Financial Management and Business Data Analytics","Management Accounting","Operations Management and Strategic Management"],
+ final3:["Strategic Financial Management","Direct Tax Laws and International Taxation","Strategic Cost Management","Corporate Financial Reporting"],
+ final4:["Corporate and Economic Laws","Indirect Tax Laws and Practice","Cost and Management Audit","Strategic Performance Management and Business Valuation"],
+};
+const group=document.getElementById("practiceGroup"), area=document.getElementById("subjectArea"), select=document.getElementById("practiceSubject"), details=document.getElementById("subjectDetails");
+function resetSubject(){select.innerHTML='<option value="">Select Subject</option>'; details.innerHTML=""; area.style.display="none";}
+group.addEventListener("change",()=>{
+ resetSubject();
+ const list=subjects[group.value]||[];
+ if(!list.length)return;
+ list.forEach((name,i)=>{const o=document.createElement("option");o.value=name;o.textContent=name;select.appendChild(o);});
+ area.style.display="block";
+});
+select.addEventListener("change",()=>{
+ details.innerHTML="";
+ if(!select.value)return;
+ const card=document.createElement("a"); card.className="subject-card"; card.href="#";
+ card.innerHTML='<div class="card-icon">'+String(select.selectedIndex).padStart(2,"0")+'</div><div class="card-copy"><h3>'+select.value+'</h3><p>Practice MCQ</p></div><span class="arrow">PRACTICE →</span>';
+ details.appendChild(card);
+});
+</script></body></html>
