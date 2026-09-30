@@ -1,11 +1,126 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d3b3e"><title>CMA Zone</title><link rel="stylesheet" href="assets/css/theme.css"></head><body>
-<div class="cma-update-strip"><b>UPDATE #26 — Fixed Subjective Scroll and MCQ Option Layout</b><span>Subjective paper now stays continuous-scroll; MCQ options A, B, C and D are stacked in separate boxes.</span></div>
-<header class="topbar"><div class="topbar-inner"><div><div class="brand">CMA <span>ZONE</span></div><span class="brand-sub">MCQ Practice · Test Preparation</span></div><div class="session"><a class="btn btn-gold" href="#plans">💳 Buy Subscription</a><a id="loginLink" class="btn btn-light" href="login.html">Login</a><span id="userEmail" class="nav-email" style="display:none"></span><button id="logoutBtn" class="btn btn-ghost" type="button" style="display:none">Logout</button></div></div></header>
-<div class="cma-madeby">✨ Made by CMA Students, for CMA Students ✨</div><main>
-<section class="hero"><span class="eyebrow">CMA STUDY PLATFORM</span><h1>Study. Practice. Improve.</h1><p>Choose your CMA level and subject. Your progress, attempts and access are managed securely through the CMA Zone platform.</p><div class="hero-actions"><span class="hero-pill">✓ Full access is free for everyone right now</span><span class="hero-pill">✓ Group-wise access</span><span class="hero-pill">✓ MCQ Bank + PYQ</span></div></section>
-<div class="dashboard"><div class="info-card"><h3>How it works</h3><p>Browse your CMA groups and subjects from one consistent interface. MCQ practice, PYQs and full-length exams will use the same design system across every subject.</p></div><div class="access-card"><div class="access-title">Your Access</div><div class="access-sub">Login to see your active groups and attempt usage.</div><div class="access-tags"><span class="access-tag">Foundation</span><span class="access-tag">Inter Group 1</span><span class="access-tag">Final Group 3</span></div></div></div>
-<div class="offer-box" id="plans"><div class="offer-copy"><strong>🔥 Subscription Offers</strong><div class="offer-price"><span class="old">₹199</span><span class="new">₹99</span></div></div><a href="#" class="btn btn-gold">View Plans</a></div>
-<section class="group-section"><div class="section-head"><div><span class="eyebrow">MCQ PRACTICE CENTRE</span><h2>Practice MCQ</h2><p>Select the yellow Practice MCQ button to enter the MCQ portal.</p></div><a class="section-index" href="mcq.html" style="text-decoration:none;cursor:pointer">PRACTICE MCQ</a></div></section>
-<section class="group-section"><div class="section-head subjective-head"><div><span class="eyebrow">SUBJECTIVE PRACTICE CENTRE</span><h2>Practice Subjective Questions</h2><p>Practice subjective questions from previous-year papers and mock tests.</p></div><a class="section-index subjective-link" href="subjective.html">SUBJECTIVE<br>PRACTICE</a></div></section><section class="group-section"><div class="section-head"><div><span class="eyebrow">FULL LENGTH EXAM</span><h2>📝 Full-Length CMA Exam</h2><p>Timed exam · navigation · review · submission · results · bell alerts</p></div><a class="section-index" href="exam.html" style="text-decoration:none;cursor:pointer">EXAM ENGINE</a></div></section>
-<section class="support"><div><h3>Need help or want to share feedback?</h3><p>Found an issue, wrong answer, or have a suggestion? We want to hear it.</p></div><div class="support-actions"><a href="#">📧 Email</a><a href="#">💬 WhatsApp</a></div></section></main><footer>© 2026 <strong>CMA Zone</strong></footer>
-<script type="module" src="assets/js/firebase-auth.js"></script><script type="module">window.addEventListener("cma-auth-changed",e=>{const user=e.detail,email=document.getElementById("userEmail"),login=document.getElementById("loginLink"),logout=document.getElementById("logoutBtn");if(user){email.textContent=user.email||"Signed in";email.style.display="inline-block";login.style.display="none";logout.style.display="inline-block"}else{email.textContent="";email.style.display="none";login.style.display="inline-block";logout.style.display="none"}});document.addEventListener("click",async e=>{if(e.target.id==="logoutBtn")await window.CMAZoneFirebase.signOutUser()});</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d3b3e">
+<title>CMA Zone — CMA Hub</title>
+<style>
+:root{--teal:#0d3b3e;--dark:#082627;--gold:#c8a24a;--cream:#faf6ee;--paper:#fffdf8;--line:#e5dece;--muted:#65716f;--red:#a43c32;--green:#2f7042}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:#22302f;font-family:Inter,Segoe UI,Arial,sans-serif}
+.hidden{display:none!important}.top-update{background:var(--teal);color:#fff;padding:10px 16px;font-size:12px;border-bottom:1px solid var(--gold)}
+header{background:var(--teal);color:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:0;z-index:10;box-shadow:0 3px 12px #08262722}
+.brand{font-weight:800;font-size:19px}.brand span{color:#ead39b}.brand-sub{font-size:11px;color:#dbe5e3;display:block;margin-top:2px}
+.wrap{max-width:1450px;margin:auto;padding:20px 16px 50px}
+.btn{border:0;border-radius:9px;padding:9px 12px;background:var(--teal);color:#fff;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.gold{background:var(--gold);color:var(--dark)}.btn.gray{background:#687572}.btn.light{background:transparent;border:1px solid #d7e0de}
+.session{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.nav-email{font-size:12px;color:#fff;background:#ffffff16;border:1px solid #ffffff24;border-radius:999px;padding:8px 11px}
+.panel,.stat{background:var(--paper);border:1px solid var(--line);border-radius:15px;box-shadow:0 5px 18px #0826270d}.panel{margin-top:16px;overflow:hidden}.panel h2{margin:0;padding:15px 17px;border-bottom:1px solid var(--line);color:var(--dark);font-size:16px}.body{padding:15px 17px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}.stat{padding:15px}.stat b{display:block;font-size:22px;color:var(--teal)}.stat span,.small{font-size:12px;color:var(--muted)}
+.hero{padding:22px 0 4px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.08em;color:#9a741e}.hero h1{font-size:clamp(28px,5vw,44px);margin:7px 0;color:var(--dark)}.hero p{max-width:760px;color:var(--muted);line-height:1.6;margin:0}.hero-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.hero-pill{background:#e8f1ef;color:var(--teal);font-size:12px;font-weight:700;border-radius:999px;padding:8px 11px}
+.dashboard{display:grid;grid-template-columns:1.5fr 1fr;gap:12px;margin-top:16px}.info-card,.access-card{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:16px;box-shadow:0 5px 18px #0826270d}.info-card h3{margin:0 0 7px;color:var(--dark)}.info-card p,.access-sub{margin:0;color:var(--muted);font-size:13px;line-height:1.55}.access-title{font-weight:800;color:var(--teal);font-size:14px}.access-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.access-tag{font-size:11px;font-weight:800;padding:5px 8px;border-radius:999px;background:#e8f1ef;color:var(--teal)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.hub-card{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fffaf0}.hub-card h3{margin:0 0 6px;color:var(--teal)}.hub-card p{font-size:12px;color:var(--muted);min-height:36px;margin:0 0 12px;line-height:1.45}.section-note{background:#f7f1e5;border:1px solid var(--line);padding:10px;border-radius:9px;font-size:12px;color:#596563}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.group-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.group-filter button.active{background:var(--gold);color:var(--dark)}
+.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:720px}th,td{padding:9px 10px;border-bottom:1px solid #eee7da;text-align:left;font-size:12px;vertical-align:top}th{background:#f2ecdf;color:var(--dark)}
+.status-box{margin-top:12px;padding:10px;border-radius:9px;font-size:12px}.status-box.ok{background:#eaf4ed;color:var(--green)}.status-box.info{background:#f7f1e5;color:#596563}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:25px 10px}
+@media(max-width:700px){header{padding:12px}.wrap{padding:14px 10px 35px}.dashboard{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.session .btn{padding:8px 10px;font-size:12px}.hero h1{font-size:30px}}
+</style>
+</head>
+<body>
+<div class="top-update"><b>UPDATE #27</b> — CMA Hub redesigned to match the CMA Control Center visual system. Group → Subject catalogue and practice entry points are now presented in the same panel-based design.</div>
+<header>
+ <div><div class="brand">CMA <span>ZONE</span></div><span class="brand-sub">CMA Hub · Study, Practice & Exam Centre</span></div>
+ <div class="session">
+  <a class="btn gold" href="#practice">Practice</a>
+  <a id="loginLink" class="btn light" href="login.html">Login</a>
+  <span id="userEmail" class="nav-email" style="display:none"></span>
+  <button id="logoutBtn" class="btn gray" type="button" style="display:none">Logout</button>
+ </div>
+</header>
+
+<main class="wrap">
+<section class="hero">
+ <span class="eyebrow">CMA STUDY PLATFORM</span>
+ <h1>CMA Hub</h1>
+ <p>One place for MCQ practice, PYQs, subjective papers and full-length CMA exams. Select your group and subject, then continue directly to the required practice centre.</p>
+ <div class="hero-actions"><span class="hero-pill">✓ MCQ Bank</span><span class="hero-pill">✓ PYQ</span><span class="hero-pill">✓ Subjective</span><span class="hero-pill">✓ Full-Length Exam</span><span class="hero-pill">✓ Chapter-wise Practice</span></div>
+</section>
+
+<div class="stats">
+ <div class="stat"><b>5</b><span>CMA Groups</span></div>
+ <div class="stat"><b>15+</b><span>Core Papers</span></div>
+ <div class="stat"><b>MCQ</b><span>Practice Bank</span></div>
+ <div class="stat"><b>PYQ</b><span>Previous Papers</span></div>
+</div>
+
+<div class="dashboard">
+ <div class="info-card"><h3>How it works</h3><p>Select your CMA group → choose the subject → choose chapter/attempt where available → start the required practice mode. The same subject and chapter master is used across the practice centres.</p></div>
+ <div class="access-card"><div class="access-title">Your Access</div><div class="access-sub">Login to see your active groups and access status.</div><div class="access-tags"><span class="access-tag">Group-wise</span><span class="access-tag">MCQ</span><span class="access-tag">PYQ</span><span class="access-tag">Exam</span></div></div>
+</div>
+
+<section class="panel" id="practice"><h2>Practice Centres</h2><div class="body"><div class="grid">
+ <div class="hub-card"><h3>MCQ Bank</h3><p>Chapter-wise and attempt-wise MCQ practice with question navigation.</p><a class="btn gold" href="mcq.html">Open MCQ Bank →</a></div>
+ <div class="hub-card"><h3>Subjective PYQ</h3><p>Previous-year subjective questions with chapter and sub-question navigation.</p><a class="btn gold" href="subjective.html">Open Subjective →</a></div>
+ <div class="hub-card"><h3>Full-Length Exam</h3><p>Timed MCQ and subjective exam flow with question navigation and submission.</p><a class="btn gold" href="exam.html">Open Full Exam →</a></div>
+</div></div></section>
+
+<section class="panel"><h2>📚 CMA Subject Catalogue</h2><div class="body">
+ <div class="section-note">Use the same Group → Subject mapping across CMA Zone. Select a group below to view its papers and subjects.</div>
+ <div class="group-filter" style="margin-top:12px">
+  <button class="btn active" data-group="all">All</button>
+  <button class="btn" data-group="foundation">Foundation</button>
+  <button class="btn" data-group="inter1">Inter Group 1</button>
+  <button class="btn" data-group="inter2">Inter Group 2</button>
+  <button class="btn" data-group="final3">Final Group 3</button>
+  <button class="btn" data-group="final4">Final Group 4</button>
+ </div>
+ <div class="tablewrap"><table><thead><tr><th>Level / Group</th><th>Paper</th><th>Subject</th></tr></thead><tbody id="catalogueRows"></tbody></table></div>
+</div></section>
+
+<section class="panel"><h2>Quick Access</h2><div class="body"><div class="toolbar">
+ <a class="btn" href="mcq.html">MCQ Bank</a><a class="btn" href="subjective.html">Subjective PYQ</a><a class="btn" href="exam.html">Full-Length Exam</a><a class="btn gray" href="login.html">Login / Account</a>
+</div><div id="hubStatus" class="status-box info">Select a group above to filter the CMA subject catalogue.</div></div></section>
+</main>
+<footer>© 2026 <strong>CMA Zone</strong> · CMA Hub</footer>
+
+<script>
+const catalogue=[
+['foundation','Foundation','Paper 1','Fundamentals of Business Laws and Business Communication'],
+['foundation','Foundation','Paper 2','Fundamentals of Financial and Cost Accounting'],
+['foundation','Foundation','Paper 3','Fundamentals of Business Mathematics and Statistics'],
+['foundation','Foundation','Paper 4','Fundamentals of Business Economics and Management'],
+['inter1','Intermediate Group 1','Paper 5','Business Laws and Ethics'],
+['inter1','Intermediate Group 1','Paper 6','Financial Accounting'],
+['inter1','Intermediate Group 1','Paper 7','Direct and Indirect Taxation'],
+['inter1','Intermediate Group 1','Paper 8','Cost Accounting'],
+['inter2','Intermediate Group 2','Paper 9','Operations Management and Strategic Management'],
+['inter2','Intermediate Group 2','Paper 10','Corporate Accounting and Auditing'],
+['inter2','Intermediate Group 2','Paper 11','Financial Management and Business Data Analytics'],
+['inter2','Intermediate Group 2','Paper 12','Management Accounting'],
+['final3','Final Group 3','Paper 13','Corporate and Economic Laws'],
+['final3','Final Group 3','Paper 14','Strategic Financial Management'],
+['final3','Final Group 3','Paper 15','Direct Tax Laws and International Taxation'],
+['final4','Final Group 4','Paper 17','Cost and Management Audit'],
+['final4','Final Group 4','Paper 18','Corporate Financial Reporting'],
+['final4','Final Group 4','Paper 19','Indirect Tax Laws and Practice']
+];
+const rows=document.getElementById('catalogueRows'),status=document.getElementById('hubStatus');
+function renderCatalogue(group='all'){
+ rows.innerHTML=catalogue.filter(x=>group==='all'||x[0]===group).map(x=>'<tr><td>'+x[1]+'</td><td>'+x[2]+'</td><td>'+x[3]+'</td></tr>').join('');
+ status.textContent=group==='all'?'Showing all CMA groups and core papers.':'Showing '+(catalogue.find(x=>x[0]===group)||['','Selected Group'])[1]+' subjects.';
+ document.querySelectorAll('[data-group]').forEach(b=>b.classList.toggle('active',b.dataset.group===group));
+}
+document.querySelectorAll('[data-group]').forEach(b=>b.onclick=()=>renderCatalogue(b.dataset.group));renderCatalogue();
+
+document.addEventListener('click',async e=>{if(e.target.id==='logoutBtn'&&window.CMAZoneFirebase)await window.CMAZoneFirebase.signOutUser()});
+</script>
+<script type="module" src="assets/js/firebase-auth.js"></script>
+<script type="module">
+window.addEventListener("cma-auth-changed",e=>{
+ const user=e.detail,email=document.getElementById("userEmail"),login=document.getElementById("loginLink"),logout=document.getElementById("logoutBtn");
+ if(user){email.textContent=user.email||"Signed in";email.style.display="inline-block";login.style.display="none";logout.style.display="inline-block"}
+ else{email.textContent="";email.style.display="none";login.style.display="inline-block";logout.style.display="none"}
+});
+</script>
+</body></html>
