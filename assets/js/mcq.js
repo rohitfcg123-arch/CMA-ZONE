@@ -3,14 +3,9 @@
   const group = params.get('group') || '';
   const subject = params.get('subject') || 'Selected Subject';
 
-  const chapterMaster = {
-    // Chapter names will be filled from the exact chapter master supplied for each subject.
-    // Do not replace these with invented chapter names.
-  };
-
-  const attemptMaster = {
-    // Attempts will be populated from the question database for the selected subject.
-  };
+  const master = window.CMA_ZONE_CHAPTER_MASTER || {};
+  const chapterMaster = master;
+  const attemptMaster = {};
 
   const subjectTitle = document.getElementById('subjectTitle');
   const subjectMeta = document.getElementById('subjectMeta');
@@ -32,9 +27,16 @@
   subjectTitle.textContent = subject;
   subjectMeta.textContent = 'MCQ Portal · ' + (group ? group.replace(/(^|\s)\S/g, m => m.toUpperCase()) : 'CMA') + ' · Choose your practice settings below.';
 
+  function getChapters() {
+    for (const groupName of Object.keys(chapterMaster)) {
+      if (chapterMaster[groupName][subject]) return chapterMaster[groupName][subject];
+    }
+    return [];
+  }
+
   function populateChapters() {
     chapter.innerHTML = '<option value="all">All Chapters</option>';
-    (chapterMaster[subject] || []).forEach((name) => {
+    getChapters().forEach((name) => {
       const option = document.createElement('option');
       option.value = name;
       option.textContent = name;
