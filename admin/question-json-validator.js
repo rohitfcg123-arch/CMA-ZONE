@@ -85,15 +85,15 @@
     library.style.display='block';
     list.innerHTML=rows.length?rows.map((q,i)=>{
       const previewText=String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
-      return '<div class="question-library-row"><div class="question-library-main"><div class="question-library-top"><strong>'+esc(q.questionNo||('Question '+(i+1)))+'</strong><span>'+esc(q.questionType==='mcq'?'MCQ':'Subjective')+'</span><span>'+esc(q.subject||'')+'</span><span>'+esc(q.chapter||'')+'</span><span>'+esc(q.marks||'—')+' Marks</span></div><div class="question-library-attempt">'+esc(q.attempt||q.source||'No Attempt')+'</div><p>'+esc(previewText||'Question content stored as HTML.')+'</p></div><div class="question-library-actions"><button class="btn btn-gold edit-question-btn" data-id="'+esc(q.id)+'" type="button">EDIT</button><button class="btn btn-danger remove-question-btn" data-id="'+esc(q.id)+'" data-draft="'+(q.__draft?'1':'0')+'" type="button">REMOVE</button></div></div>'
+      return '<div class="question-library-row"><div class="question-library-main"><div class="question-library-top"><strong>'+esc(q.questionNo||('Question '+(i+1)))+'</strong><span>'+esc(q.questionType==='mcq'?'MCQ':'Subjective')+'</span><span>'+esc(q.subject||'')+'</span><span>'+esc(q.chapter||'')+'</span><span>'+esc(q.marks||'—')+' Marks</span></div><div class="question-library-attempt">'+esc(q.attempt||q.source||'No Attempt')+'</div><p>'+esc(previewText||'Question content stored as HTML.')+'</p></div><div class="question-library-actions"><button class="btn btn-gold edit-question-btn" data-id="'+esc(q.id)+'" type="button">EDIT</button><button class="btn btn-danger remove-question-btn" data-id="'+esc(q.id)+'" data-draft="'+(q.__draft?'1':'0')+'" data-draft-key="'+esc([q.questionNo||'',q.subject||'',q.chapter||'',q.attempt||''].join('||'))+'" type="button">REMOVE</button></div></div>'
     }).join(''):'<div class="question-library-empty">No questions found for this filter.</div>';
     list.querySelectorAll('.edit-question-btn').forEach(b=>b.addEventListener('click',()=>openEditor(b.dataset.id)));
-    list.querySelectorAll('.remove-question-btn').forEach(b=>b.addEventListener('click',()=>removeQuestion(b.dataset.id,b.dataset.draft==='1')));
+    list.querySelectorAll('.remove-question-btn').forEach(b=>b.addEventListener('click',()=>removeQuestion(b.dataset.id,b.dataset.draft==='1',b.dataset.draftKey||'')));
   }
 
-  function removeQuestion(id,isDraft){
+  function removeQuestion(id,isDraft,draftKey){
     const q=isDraft
-      ? (validated?.qs||[]).find((x,i)=>{const n=getField(x,['questionNo','questionNumber','number','no']);const subj=getField(x,['subject','subjectName'])||validated.topSubject;const ch=getField(x,['chapter','chapterName'])||getField(x.category||{},['chapter','chapterName']);return (n&&String(n)===String(id))||String(x.id||'')===String(id)||String(subj+'|'+ch+'|'+n)===String(id)})
+      ? (validated?.qs||[]).find(x=>{const n=getField(x,['questionNo','questionNumber','number','no']);const subj=getField(x,['subject','subjectName'])||validated.topSubject;const ch=getField(x,['chapter','chapterName'])||getField(x.category||{},['chapter','chapterName']);const att=getField(x,['attempt','paperAttempt'])||validated.topAttempt;return String([n,subj,ch,att].join('||'))===String(draftKey)})
       : CMAZoneQuestionStore.read().find(x=>String(x.id)===String(id));
     if(!q){alert('Question record not found.');return}
     const no=getField(q,['questionNo','questionNumber','number','no'])||'this question';
