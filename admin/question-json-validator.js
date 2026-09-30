@@ -1,10 +1,18 @@
 (() => {
-  const input=document.getElementById('questionJsonFile'),output=document.getElementById('jsonValidationResult'),validateBtn=document.getElementById('validateQuestionJson'),publishBtn=document.getElementById('publishQuestionJson');
-  let validated=null;
+  const input=document.getElementById('questionJsonFile'),output=document.getElementById('jsonValidationResult'),
+    validateBtn=document.getElementById('validateQuestionJson'),publishBtn=document.getElementById('publishQuestionJson'),
+    preview=document.getElementById('jsonUploadPreview'),previewText=document.getElementById('jsonPreviewText'),
+    previewMeta=document.getElementById('jsonPreviewMeta'),library=document.getElementById('questionLibrary'),
+    list=document.getElementById('questionList'),modal=document.getElementById('questionEditModal');
+  let validated=null,currentFilter='all',editingId=null;
+
   function subjectMap(){const map={},master=window.CMA_ZONE_CHAPTER_MASTER||{};Object.values(master).forEach(g=>Object.keys(g).forEach(s=>map[s]=g[s]));return map}
   function getQuestions(d){if(Array.isArray(d))return d;return d.questions||d.questionBank||d.items||d.data||null}
   function getField(q,n){for(const x of n)if(q&&q[x]!=null&&String(q[x]).trim())return String(q[x]).trim();return''}
-  function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+  function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+  function setLoading(btn,on,label){if(!btn)return;btn.disabled=on;btn.dataset.oldLabel=btn.dataset.oldLabel||btn.textContent;btn.textContent=on?'LOADING…':(label||btn.dataset.oldLabel)}
+  function showPreview(data,file){preview.style.display='block';previewMeta.textContent=file.name+' · '+(getQuestions(data)?.length||0)+' question records';let raw=JSON.stringify(data,null,2);previewText.textContent=raw.length>7000?raw.slice(0,7000)+'\n… [preview truncated]':raw}
+
   function validateData(data){
     const qs=getQuestions(data);if(!Array.isArray(qs)||!qs.length)return{errors:['No questions array found. Expected questions/questionBank/items/data.']};
     const map=subjectMap(),errors=[],topSubject=getField(data,['subject','subjectName']),topAttempt=getField(data,['attempt','paperAttempt']);
@@ -12,15 +20,86 @@
     return{errors,qs,topSubject,topAttempt}
   }
   function showErrors(es){output.className='json-validation-result error';output.innerHTML='<strong>UPLOAD BLOCKED — exact master validation failed.</strong><ul>'+es.slice(0,50).map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+(es.length>50?'<p>Showing first 50 errors. Fix every invalid record.</p>':'');publishBtn.disabled=true}
+
   function validate(){
     validated=null;publishBtn.disabled=true;output.className='json-validation-result';output.textContent='';
     if(!input.files.length){output.classList.add('error');output.textContent='Select a JSON file first.';return}
-    const reader=new FileReader();reader.onload=()=>{let data;try{data=JSON.parse(reader.result)}catch(e){output.className='json-validation-result error';output.textContent='JSON Error: Invalid JSON syntax.';return}
-      const r=validateData(data);if(r.errors.length){showErrors(r.errors);return} validated=r;
+    setLoading(validateBtn,true);
+    const reader=new FileReader();
+    reader.onload=()=>{let data;try{data=JSON.parse(reader.result)}catch(e){setLoading(validateBtn,false,'VALIDATE JSON');output.className='json-validation-result error';output.textContent='JSON Error: Invalid JSON syntax.';return}
+      showPreview(data,input.files[0]);
+      const r=validateData(data);if(r.errors.length){setLoading(validateBtn,false,'VALIDATE JSON');showErrors(r.errors);return}
+      validated=r;
       const rows=r.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:r.topSubject,attempt:r.topAttempt})),mcq=rows.filter(q=>q.questionType==='mcq').length,sub=rows.length-mcq,pyq=rows.filter(q=>q.surfaces.includes('mcq-pyq')||q.surfaces.includes('subjective-pyq')).length;
-      output.className='json-validation-result success';output.innerHTML='<strong>VALIDATION PASSED.</strong> '+rows.length+' questions · '+mcq+' MCQ · '+sub+' Subjective · '+pyq+' PYQ. Exact subject/chapter names confirmed. <b>Publish</b> routes each record automatically.';publishBtn.disabled=false};
+      setLoading(validateBtn,false,'VALIDATE JSON');
+      output.className='json-validation-result success';output.innerHTML='<strong>VALIDATION PASSED.</strong> '+rows.length+' questions · '+mcq+' MCQ · '+sub+' Subjective · '+pyq+' PYQ. Exact subject/chapter names confirmed. <b>Publish</b> routes each record automatically.';publishBtn.disabled=false;
+    };
     reader.readAsText(input.files[0])
   }
-  function publish(){if(!validated)return;const old=CMAZoneQuestionStore.read(),rows=validated.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:validated.topSubject,attempt:validated.topAttempt}));CMAZoneQuestionStore.write(old.concat(rows));output.className='json-validation-result success';output.innerHTML='<strong>PUBLISHED.</strong> '+rows.length+' questions added. MCQ/PYQ/Subjective/Full-Length routing is stored per question. Total stored: '+CMAZoneQuestionStore.count()+'.';publishBtn.disabled=true}
-  validateBtn.addEventListener('click',validate);publishBtn.addEventListener('click',publish);input.addEventListener('change',()=>{validated=null;publishBtn.disabled=true;output.className='json-validation-result';output.textContent=input.files[0]?'File selected. Click Validate JSON.':''})
+
+  function publish(){
+    if(!validated)return;
+    setLoading(publishBtn,true);
+    setTimeout(()=>{
+      const old=CMAZoneQuestionStore.read(),rows=validated.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:validated.topSubject,attempt:validated.topAttempt}));
+      CMAZoneQuestionStore.write(old.concat(rows));
+      output.className='json-validation-result success';output.innerHTML='<strong>PUBLISHED.</strong> '+rows.length+' questions added. MCQ/PYQ/Subjective/Full-Length routing is stored per question. Total stored: '+CMAZoneQuestionStore.count()+'.';
+      setLoading(publishBtn,false,'PUBLISH QUESTIONS');publishBtn.disabled=true;renderLibrary();
+    },250)
+  }
+
+  function renderLibrary(){
+    if(!library||!list)return;
+    const rows=CMAZoneQuestionStore.read().filter(q=>currentFilter==='all'||q.questionType===currentFilter);
+    library.style.display='block';
+    list.innerHTML=rows.length?rows.map((q,i)=>{
+      const previewText=String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,220);
+      return '<div class="question-library-row"><div class="question-library-main"><div class="question-library-top"><strong>'+esc(q.questionNo||('Question '+(i+1)))+'</strong><span>'+esc(q.questionType==='mcq'?'MCQ':'Subjective')+'</span><span>'+esc(q.subject||'')+'</span><span>'+esc(q.chapter||'')+'</span><span>'+esc(q.marks||'—')+' Marks</span></div><div class="question-library-attempt">'+esc(q.attempt||q.source||'No Attempt')+'</div><p>'+esc(previewText||'Question content stored as HTML.')+'</p></div><button class="btn btn-gold edit-question-btn" data-id="'+esc(q.id)+'" type="button">EDIT</button></div>'
+    }).join(''):'<div class="question-library-empty">No questions found for this filter.</div>';
+    list.querySelectorAll('.edit-question-btn').forEach(b=>b.addEventListener('click',()=>openEditor(b.dataset.id)));
+  }
+
+  function populateSubjectSelect(selected){
+    const master=window.CMA_ZONE_CHAPTER_MASTER||{},sel=document.getElementById('editSubject');if(!sel)return;
+    const names=[];Object.values(master).forEach(g=>Object.keys(g).forEach(s=>{if(!names.includes(s))names.push(s)}));
+    sel.innerHTML='<option value="">Select Subject</option>'+names.map(s=>'<option value="'+esc(s)+'">'+esc(s)+'</option>').join('');
+    sel.value=selected||'';
+  }
+  function populateChapterSelect(subject,selected){
+    const master=window.CMA_ZONE_CHAPTER_MASTER||{},sel=document.getElementById('editChapter');if(!sel)return;
+    let chapters=[];Object.values(master).forEach(g=>{if(Array.isArray(g[subject]))chapters=g[subject]});
+    sel.innerHTML='<option value="">Select Chapter</option>'+chapters.map(s=>'<option value="'+esc(s)+'">'+esc(s)+'</option>').join('');
+    sel.value=chapters.includes(selected)?selected:'';
+  }
+
+  function openEditor(id){
+    const q=CMAZoneQuestionStore.read().find(x=>x.id===id);if(!q)return;editingId=id;
+    document.getElementById('editQuestionTitle').textContent='Edit '+(q.questionNo||'Question');
+    document.getElementById('editQuestionNo').value=q.questionNo||'';
+    document.getElementById('editMarks').value=q.marks??'';
+    populateSubjectSelect(q.subject||'');populateChapterSelect(q.subject||'',q.chapter||'');
+    document.getElementById('editQuestionContent').value=q.questionHtml||q.question||q.text||'';
+    modal.style.display='flex';modal.setAttribute('aria-hidden','false');
+  }
+  function closeEditor(){modal.style.display='none';modal.setAttribute('aria-hidden','true');editingId=null}
+  function saveEdit(){
+    if(!editingId)return;
+    const subject=document.getElementById('editSubject').value,chapter=document.getElementById('editChapter').value;
+    const map=subjectMap();if(!subject||!map[subject]||!chapter||!map[subject].includes(chapter)){alert('Please select a valid Subject and Chapter from the CMA Zone master.');return}
+    const qrows=CMAZoneQuestionStore.read(),idx=qrows.findIndex(x=>x.id===editingId);if(idx<0)return;
+    const old=qrows[idx],newContent=document.getElementById('editQuestionContent').value;
+    if(!confirm('Sure you want to edit your main question content? This changes the uploaded question record.'))return;
+    const updated={...old,questionNo:document.getElementById('editQuestionNo').value.trim(),marks:document.getElementById('editMarks').value.trim(),subject,chapter,questionHtml:newContent};
+    delete updated.question;
+    qrows[idx]=updated;CMAZoneQuestionStore.write(qrows);closeEditor();renderLibrary();
+  }
+
+  validateBtn.addEventListener('click',validate);publishBtn.addEventListener('click',publish);
+  input.addEventListener('change',()=>{validated=null;publishBtn.disabled=true;output.className='json-validation-result';output.textContent=input.files[0]?'File selected. Click Validate JSON.':'';if(!input.files.length)preview.style.display='none'});
+  document.querySelectorAll('.question-filter').forEach(b=>b.addEventListener('click',()=>{currentFilter=b.dataset.filter;document.querySelectorAll('.question-filter').forEach(x=>x.classList.toggle('active',x===b));renderLibrary()}));
+  document.querySelectorAll('[data-close-edit]').forEach(x=>x.addEventListener('click',closeEditor));
+  document.getElementById('editSubject')?.addEventListener('change',e=>populateChapterSelect(e.target.value,''));
+  document.getElementById('saveQuestionEdit')?.addEventListener('click',saveEdit);
+  window.addEventListener('cmaZoneQuestionsUpdated',renderLibrary);
+  renderLibrary();
 })();
