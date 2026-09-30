@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d3b3e"><title>Full-Length CMA Exam · CMA Zone</title>
+<link rel="stylesheet" href="assets/css/theme.css">
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner"><div><div class="brand">CMA <span>ZONE</span></div><span class="brand-sub">Full-Length CMA Exam</span></div><div class="session"><a class="btn btn-light" href="index.html">← Home</a></div></div></header>
+<div class="cma-madeby">✨ Made by CMA Students, for CMA Students ✨</div>
+<main>
+<section class="hero"><span class="eyebrow">FULL-LENGTH EXAM ENGINE</span><h1>Full-Length CMA Exam</h1><p>MCQ + Subjective in one complete exam. PYQ and MTP modes are not used here.</p></section>
+<section class="group-section">
+<div class="section-head"><div><span class="eyebrow">EXAM SETUP</span><h2>Set your exam before starting</h2><p>Select group, subject and the question source. The timer starts only after you press Start Exam.</p></div><span class="section-index">EXAM ENGINE</span></div>
+<div class="exam-setup-grid">
+<label class="mcq-field"><span>CMA Group</span><select id="examGroup"><option value="">Select CMA Group</option><option value="foundation">CMA Foundation</option><option value="inter1">CMA Intermediate Group 1</option><option value="inter2">CMA Intermediate Group 2</option><option value="final3">CMA Final Group 3</option><option value="final4">CMA Final Group 4</option></select></label>
+<label class="mcq-field"><span>Subject</span><select id="examSubject" disabled><option value="">Select Subject</option></select></label>
+<label class="mcq-field"><span>Chapter Scope</span><select id="examChapter" disabled><option value="all">All Chapters</option></select></label>
+<label class="mcq-field"><span>Question Source / Attempt</span><select id="examAttempt"><option value="suggested">Without Attempt — Questions Suggested by CMA Zone</option><option>June 2024</option><option>December 2024</option><option>June 2025</option><option>December 2025</option><option>June 2026</option><option>December 2026</option></select></label>
+<label class="mcq-field"><span>Exam Timing</span><select id="examDuration"><option value="60">1 Hour</option><option value="120">2 Hours</option><option value="180">3 Hours</option><option value="195" selected>3 Hours 15 Minutes</option><option value="210">3 Hours 30 Minutes</option><option value="240">4 Hours</option></select></label>
+</div>
+<div class="exam-source-note"><b>Important:</b> Full-Length Exam has no separate PYQ/MTP mode. The selected attempt is only the source reference; “Without Attempt” means CMA Zone selects/suggests the questions.</div>
+<div class="subjective-summary" id="examSummary">Select Group and Subject · 3 Hours 15 Minutes · 15 MCQ + Subjective Questions</div>
+<button class="btn btn-gold mcq-start" id="startExam">START FULL EXAM →</button>
+<div class="mcq-status" id="examStatus">Exam questions are structured as 15 selectable MCQs followed by subjective questions.</div>
+</section>
+
+<section class="group-section">
+<div class="section-head"><div><span class="eyebrow">PAPER STRUCTURE</span><h2>How the full-length paper works</h2><p>MCQ answers are selectable on screen; subjective questions are displayed for solving on paper.</p></div></div>
+<div class="exam-structure">
+<div class="exam-structure-card"><h3>01 · MCQ Section</h3><p><b>First 15 questions.</b> Each MCQ will show answer options that can be selected directly in the exam interface. Answer selection is saved for the attempt.</p></div>
+<div class="exam-structure-card"><h3>02 · Subjective Section</h3><p><b>After the 15 MCQs.</b> Subjective questions are displayed with their marks/structure for the student to solve on paper. They are not treated as on-screen typed answers.</p></div>
+</div>
+<div class="exam-ready"><strong>Timer:</strong> The selected exam duration is configured before starting. Default is <strong>3 Hours 15 Minutes</strong>. The countdown starts only when the exam begins.</div>
+</section>
+</main>
+<footer>© 2026 <strong>CMA Zone</strong></footer>
+<script src="assets/js/chapter-master.js?v=17"></script>
+<script src="assets/js/exam.js?v=1"></script>
+</body></html>
