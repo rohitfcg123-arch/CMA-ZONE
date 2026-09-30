@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d3b3e"><title>CMA Zone</title><link rel="stylesheet" href="assets/css/theme.css"></head><body>
-<div class="cma-update-strip"><b>UPDATE #23 — Fixed MCQ PYQ selectors and started Subjective exam engine</b><span>Cost Accounting June 2026 JSON is structured for MCQ, Subjective and Full-Length routing; MCQ portal duplicate declaration fixed.</span></div>
+<div class="cma-update-strip"><b>UPDATE #24 — Fixed MCQ Bank Start Exam 404</b><span>MCQ Bank now opens the practice engine correctly after selecting Group, Subject, Chapter and question settings.</span></div>
 <header class="topbar"><div class="topbar-inner"><div><div class="brand">CMA <span>ZONE</span></div><span class="brand-sub">MCQ Practice · Test Preparation</span></div><div class="session"><a class="btn btn-gold" href="#plans">💳 Buy Subscription</a><a id="loginLink" class="btn btn-light" href="login.html">Login</a><span id="userEmail" class="nav-email" style="display:none"></span><button id="logoutBtn" class="btn btn-ghost" type="button" style="display:none">Logout</button></div></div></header>
 <div class="cma-madeby">✨ Made by CMA Students, for CMA Students ✨</div><main>
 <section class="hero"><span class="eyebrow">CMA STUDY PLATFORM</span><h1>Study. Practice. Improve.</h1><p>Choose your CMA level and subject. Your progress, attempts and access are managed securely through the CMA Zone platform.</p><div class="hero-actions"><span class="hero-pill">✓ Full access is free for everyone right now</span><span class="hero-pill">✓ Group-wise access</span><span class="hero-pill">✓ MCQ Bank + PYQ</span></div></section>
@@ -8,18 +8,4 @@
 <section class="group-section"><div class="section-head"><div><span class="eyebrow">MCQ PRACTICE CENTRE</span><h2>Practice MCQ</h2><p>Select the yellow Practice MCQ button to enter the MCQ portal.</p></div><a class="section-index" href="mcq.html" style="text-decoration:none;cursor:pointer">PRACTICE MCQ</a></div></section>
 <section class="group-section"><div class="section-head subjective-head"><div><span class="eyebrow">SUBJECTIVE PRACTICE CENTRE</span><h2>Practice Subjective Questions</h2><p>Practice subjective questions from previous-year papers and mock tests.</p></div><a class="section-index subjective-link" href="subjective.html">SUBJECTIVE<br>PRACTICE</a></div></section><section class="group-section"><div class="section-head"><div><span class="eyebrow">FULL LENGTH EXAM</span><h2>📝 Full-Length CMA Exam</h2><p>Timed exam · navigation · review · submission · results · bell alerts</p></div><a class="section-index" href="exam.html" style="text-decoration:none;cursor:pointer">EXAM ENGINE</a></div></section>
 <section class="support"><div><h3>Need help or want to share feedback?</h3><p>Found an issue, wrong answer, or have a suggestion? We want to hear it.</p></div><div class="support-actions"><a href="#">📧 Email</a><a href="#">💬 WhatsApp</a></div></section></main><footer>© 2026 <strong>CMA Zone</strong></footer>
-<script type="module" src="assets/js/firebase-auth.js"></script>
-<script type="module">
-window.addEventListener("cma-auth-changed", e => {
-  const user=e.detail;
-  const email=document.getElementById("userEmail");
-  const login=document.getElementById("loginLink");
-  const logout=document.getElementById("logoutBtn");
-  if(user){ email.textContent=user.email||"Signed in"; email.style.display="inline-block"; login.style.display="none"; logout.style.display="inline-block"; }
-  else { email.textContent=""; email.style.display="none"; login.style.display="inline-block"; logout.style.display="none"; }
-});
-document.addEventListener("click", async e => {
-  if(e.target.id==="logoutBtn") await window.CMAZoneFirebase.signOutUser();
-});
-</script>
-</body></html>
+<script type="module" src="assets/js/firebase-auth.js"></script><script type="module">window.addEventListener("cma-auth-changed",e=>{const user=e.detail,email=document.getElementById("userEmail"),login=document.getElementById("loginLink"),logout=document.getElementById("logoutBtn");if(user){email.textContent=user.email||"Signed in";email.style.display="inline-block";login.style.display="none";logout.style.display="inline-block"}else{email.textContent="";email.style.display="none";login.style.display="inline-block";logout.style.display="none"}});document.addEventListener("click",async e=>{if(e.target.id==="logoutBtn")await window.CMAZoneFirebase.signOutUser()});</script></body></html>
