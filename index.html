@@ -1,57 +1,15 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0d4545">
-<meta name="description" content="CMA Zone — unified CMA learning, MCQ, PYQ and exam platform">
-<title>CMA Zone</title>
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="assets/css/theme.css">
-</head>
-<body>
-<div id="app">
-  <div class="cma-update-strip" role="status">
-    <b>UPDATE #2</b>
-    <span>Unified CMA Zone theme for MCQ, PYQ, Exams, Study Material and CMS.</span>
-  </div>
-  <header class="topbar">
-    <a class="brand" href="./" aria-label="CMA Zone home"><span class="brand-mark">C</span><span class="brand-name">CMA <em>ZONE</em></span></a>
-    <nav class="desktop-nav" aria-label="Primary navigation"><a href="#mcq">MCQ</a><a href="#pyq">PYQ</a><a href="#exams">Exams</a><a href="#materials">Study</a></nav>
-    <div class="top-actions"><button class="icon-btn" id="notificationBtn" aria-label="Notifications">🔔<span class="badge" id="notificationBadge">0</span></button><button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button></div>
-  </header>
-  <main class="page">
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-content"><div class="eyebrow">CMA STUDY PLATFORM</div><h1 id="hero-title">Study. Practice.<br><span>Improve.</span></h1><p>One place for CMA practice, previous-year questions, study material and full-length exams — organised by group, subject and chapter.</p><div class="hero-actions"><a class="btn primary" href="#mcq">Start MCQ Practice <span>→</span></a><a class="btn secondary" href="#exams">Explore Exams</a></div></div>
-      <div class="hero-orbit hero-orbit-one" aria-hidden="true"></div><div class="hero-orbit hero-orbit-two" aria-hidden="true"></div><div class="hero-badge" aria-hidden="true"><strong>CMA</strong><span>ZONE</span></div>
-    </section>
-    <section class="section" aria-labelledby="portals-title">
-      <div class="section-head"><div><div class="eyebrow">PORTALS</div><h2 id="portals-title">Everything in one place</h2><p class="section-subtitle">A common interface across every CMA learning workflow.</p></div></div>
-      <div class="portal-grid">
-        <a class="portal-card" href="#mcq"><div class="portal-top"><span class="portal-icon">✓</span><span class="card-number">01</span></div><h3>MCQ Practice</h3><p>Subject and chapter-wise practice with attempts, timing and instant evaluation.</p><span class="card-link">Open MCQ <b>→</b></span></a>
-        <a class="portal-card" href="#pyq"><div class="portal-top"><span class="portal-icon">▤</span><span class="card-number">02</span></div><h3>PYQ Portal</h3><p>Previous-year questions organised by attempt, chapter and topic.</p><span class="card-link">Open PYQ <b>→</b></span></a>
-        <a class="portal-card" href="#exams"><div class="portal-top"><span class="portal-icon">⏱</span><span class="card-number">03</span></div><h3>Full-Length Exams</h3><p>Timed tests with navigation, review, submission and result processing.</p><span class="card-link">Open Exams <b>→</b></span></a>
-      </div>
-    </section>
-    <section class="section content-panel" id="mcq" aria-labelledby="mcq-title">
-      <div class="section-head"><div><div class="eyebrow">PRACTICE CENTRE</div><h2 id="mcq-title">MCQ Practice</h2><p class="section-subtitle">Select your CMA level first, then narrow down to subject and chapter.</p></div><span class="section-tag">MCQ</span></div>
-      <div class="filter-row"><label><span>CMA Group</span><select><option>Select Group</option><option>Foundation</option><option>Inter Group 1</option><option>Inter Group 2</option><option>Final Group 3</option><option>Final Group 4</option></select></label><label><span>Subject</span><select><option>Select Subject</option></select></label><label><span>Chapter</span><select><option>Select Chapter</option></select></label></div>
-      <div class="empty-card"><div class="empty-icon">?</div><div><strong>Choose your group and subject to start.</strong><span>MCQ content will be loaded from the CMA Zone data layer.</span></div></div>
-    </section>
-    <section class="section content-panel" id="pyq" aria-labelledby="pyq-title">
-      <div class="section-head"><div><div class="eyebrow">PREVIOUS YEARS</div><h2 id="pyq-title">PYQ Portal</h2><p class="section-subtitle">Find questions by group, subject and examination attempt.</p></div><span class="section-tag">PYQ</span></div>
-      <div class="filter-row"><label><span>CMA Group</span><select><option>Select Group</option></select></label><label><span>Subject</span><select><option>Select Subject</option></select></label><label><span>Attempt</span><select><option>Select Attempt</option></select></label></div>
-      <div class="empty-card"><div class="empty-icon">▤</div><div><strong>PYQ library is ready for data integration.</strong><span>Questions will be populated through JSON/CMS.</span></div></div>
-    </section>
-    <section class="section content-panel" id="exams" aria-labelledby="exams-title">
-      <div class="section-head"><div><div class="eyebrow">EXAM ENGINE</div><h2 id="exams-title">Full-Length Exams</h2><p class="section-subtitle">Timed tests with instructions, navigation, review, submission and results.</p></div><span class="section-tag">EXAM</span></div>
-      <div class="exam-card"><div class="exam-status"><span class="status-dot"></span><span>ENGINE FOUNDATION</span></div><div class="exam-main"><div><strong>Full exam workflow</strong><p>Duration, marks, sections, question selection and result processing will be controlled from CMS.</p></div><button class="btn secondary" disabled>Coming with CMS</button></div></div>
-    </section>
-    <section class="section study-panel" id="materials" aria-labelledby="materials-title"><div><div class="eyebrow">STUDY</div><h2 id="materials-title">Study Material</h2><p class="section-subtitle">PDFs and learning resources organised by CMA group and subject.</p></div><span class="material-mark">PDF</span></section>
-  </main>
-  <div class="mobile-nav" id="mobileNav"><a href="#mcq">MCQ</a><a href="#pyq">PYQ</a><a href="#exams">Exams</a><a href="#materials">Study</a></div>
-  <div class="toast" id="toast"></div>
-</div>
-<script src="assets/js/app.js"></script>
-</body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0d3b3e"><title>CMA Zone</title><link rel="stylesheet" href="assets/css/theme.css"></head><body>
+<div class="cma-update-strip"><b>UPDATE #2 — Home design updated</b><span>CMA Zone Home is now aligned with the supplied master cream, teal and gold theme.</span></div>
+<header class="topbar"><div class="topbar-inner"><div><div class="brand">CMA <span>ZONE</span></div><span class="brand-sub">MCQ Practice · Test Preparation</span></div><div class="session"><a class="btn btn-gold" href="#plans">💳 Buy Subscription</a><span class="nav-email">rohit.fcg123@gmail.com</span><button class="btn btn-light">Login</button></div></div></header>
+<div class="cma-madeby">✨ Made by CMA Students, for CMA Students ✨</div>
+<main>
+<section class="hero"><span class="eyebrow">CMA STUDY PLATFORM</span><h1>Study. Practice. Improve.</h1><p>Choose your CMA level and subject. Your progress, attempts and access are managed securely through the CMA Zone platform.</p><div class="hero-actions"><span class="hero-pill">✓ Full access is free for everyone right now</span><span class="hero-pill">✓ Group-wise access</span><span class="hero-pill">✓ MCQ Bank + PYQ</span></div></section>
+<div class="dashboard"><div class="info-card"><h3>How it works</h3><p>Browse your CMA groups and subjects from one consistent interface. MCQ practice, PYQs and full-length exams will use the same design system across every subject.</p></div><div class="access-card"><div class="access-title">Your Access</div><div class="access-sub">Login to see your active groups and attempt usage.</div><div class="access-tags"><span class="access-tag">Foundation</span><span class="access-tag">Inter Group 1</span><span class="access-tag">Final Group 3</span></div></div></div>
+<div class="offer-box" id="plans"><div class="offer-copy"><strong>🔥 Subscription Offers</strong><div class="offer-price"><span class="old">₹199</span><span class="new">₹99</span></div></div><a href="#" class="btn btn-gold">View Plans</a></div>
+<section class="group-section"><div class="section-head"><div><span class="eyebrow">CMA STUDENT RESOURCES</span><h2>📚 CMA Student Hub</h2><p>Study Material · MCQ Bank · Previous Year Papers · Answers · Revision</p></div><span class="section-index">STUDENT HUB</span></div><div class="grid"><a class="subject-card" href="#"><div class="card-icon">01</div><div class="card-copy"><h3>Study Material</h3><p>Group-wise and subject-wise learning resources.</p></div><span class="arrow">OPEN →</span></a><a class="subject-card" href="#"><div class="card-icon">02</div><div class="card-copy"><h3>Previous Year Papers</h3><p>Attempt-wise PYQ library with consistent presentation.</p></div><span class="arrow">OPEN →</span></a></div></section>
+<section class="group-section"><div class="section-head"><div><span class="eyebrow">FULL LENGTH EXAM</span><h2>📝 Full-Length CMA Exam</h2><p>Timed exam · navigation · review · submission · results · bell alerts</p></div><span class="section-index">EXAM ENGINE</span></div><a class="subject-card" href="#"><div class="card-icon">EX</div><div class="card-copy"><h3>Start Full Exam</h3><p>The complete exam interface will use the same master CMA Zone theme.</p></div><span class="arrow">START →</span></a></section>
+<section class="group-section"><div class="section-head"><div><span class="eyebrow">MCQ PRACTICE CENTRE</span><h2>Practice MCQ</h2><p>Choose a CMA group and then select a subject. Every subject will use this exact same visual template.</p></div><span class="section-index">PRACTICE MCQ</span></div>
+<select style="width:100%;padding:13px;background:#fff;border:1px solid var(--border);border-radius:10px;color:var(--teal);font-weight:850"><option>Select CMA Group</option><option>CMA Foundation</option><option>CMA Intermediate Group 1</option><option>CMA Intermediate Group 2</option><option>CMA Final Group 3</option><option>CMA Final Group 4</option></select>
+<div class="grid" style="margin-top:12px"><a class="subject-card" href="#"><div class="card-icon">01</div><div class="card-copy"><h3>Strategic Financial Management</h3><p>Practice MCQ</p></div><span class="arrow">PRACTICE →</span></a><a class="subject-card" href="#"><div class="card-icon">02</div><div class="card-copy"><h3>Direct Tax & International Laws</h3><p>Practice MCQ</p></div><span class="arrow">PRACTICE →</span></a><a class="subject-card" href="#"><div class="card-icon">03</div><div class="card-copy"><h3>Corporate & Economic Laws</h3><p>Practice MCQ</p></div><span class="arrow">PRACTICE →</span></a></div></section>
+<section class="support"><div><h3>Need help or want to share feedback?</h3><p>Found an issue, wrong answer, or have a suggestion? We want to hear it.</p></div><div class="support-actions"><a href="#">📧 Email</a><a href="#">💬 WhatsApp</a></div></section>
+</main><footer>© 2026 <strong>CMA Zone</strong></footer></body></html>
