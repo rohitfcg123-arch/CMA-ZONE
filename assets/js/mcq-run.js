@@ -46,7 +46,8 @@
     $('runSubject').textContent = setup.subject;
     $('runMeta').textContent = (setup.chapter === 'all' ? 'All Chapters' : setup.chapter) + ' · ' + questions.length + ' Questions';
     $('runProgress').textContent = 'Question ' + (index+1) + ' of ' + questions.length;
-    $('questionNo').textContent = 'Question ' + (index+1) + (q.marks ? ' · ' + q.marks + ' Marks' : '');
+    const nav = $('questionNavigator'); if(nav){nav.innerHTML='';questions.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.className='question-nav-btn'+(i===index?' active':'')+(answers[i]!=null?' answered':'');b.textContent=x.questionNo||String(i+1);b.title='Go to Question '+(x.questionNo||i+1);b.onclick=()=>{index=i;render();window.scrollTo({top:0,behavior:'smooth'});};nav.appendChild(b);});}
+    $('questionNo').textContent = 'Question ' + (q.questionNo|| (index+1)) + (q.marks ? ' · ' + q.marks + ' Marks' : '');
     $('questionText').innerHTML = q.questionHtml || q.question || q.text || '';
     const box = $('options'); box.innerHTML = '';
     getOptions(q).forEach((opt,i) => {
