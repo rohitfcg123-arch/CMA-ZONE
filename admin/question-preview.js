@@ -1,5 +1,7 @@
 (() => {
- const raw=sessionStorage.getItem('cmaZoneQuestionPreviewData'), meta=raw?JSON.parse(raw):null;
+ const raw=sessionStorage.getItem('cmaZoneQuestionPreviewData');
+ let meta=raw?JSON.parse(raw):null;
+ if(!meta){try{const draft=sessionStorage.getItem('cmaZoneQuestionUploadDraft');if(draft){const d=JSON.parse(draft);if(d&&d.data){const data=d.data;meta={data:{qs:Array.isArray(data)?data:(data.questions||data.questionBank||data.items||data.data||[]),topSubject:data.subject||data.subjectName,topAttempt:data.attempt||data.paperAttempt},fileName:d.fileName||'Saved JSON'};}}}catch(e){}}
  const list=document.getElementById('previewList'), info=document.getElementById('previewMeta'), count=document.getElementById('previewCount');
  if(!meta||!meta.data){info.textContent='No saved preview found. Return to the uploader and validate a JSON file.';list.innerHTML='<div class="question-library-empty">No preview data available.</div>';return}
  const qs=meta.data.qs||[]; info.textContent=meta.fileName+' · Preview only · Not published';count.textContent=qs.length+' question'+(qs.length===1?'':'s');
