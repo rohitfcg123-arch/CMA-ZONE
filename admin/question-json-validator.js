@@ -13,7 +13,8 @@
   function setLoading(btn,on,label){if(!btn)return;btn.disabled=on;btn.dataset.oldLabel=btn.dataset.oldLabel||btn.textContent;btn.textContent=on?'LOADING…':(label||btn.dataset.oldLabel)}
   function saveDraft(data,fileName){try{sessionStorage.setItem('cmaZoneQuestionUploadDraft',JSON.stringify({data,fileName, savedAt:new Date().toISOString()}))}catch(e){}}
   function clearDraft(){sessionStorage.removeItem('cmaZoneQuestionUploadDraft')}
-  function showPreview(data,file){preview.style.display='block';previewMeta.textContent=file.name+' · '+(getQuestions(data)?.length||0)+' question records';let raw=JSON.stringify(data,null,2);previewText.textContent=raw.length>7000?raw.slice(0,7000)+'\n… [preview truncated]':raw}
+  function showPreview(data,file){preview.style.display='block';previewMeta.textContent=file.name+' · '+(getQuestions(data)?.length||0)+' question records';let raw=JSON.stringify(data,null,2);previewText.textContent=raw.length>7000?raw.slice(0,7000)+'
+… [preview truncated]':raw}
   function restoreDraft(){
     try{
       const raw=sessionStorage.getItem('cmaZoneQuestionUploadDraft'); if(!raw)return;
@@ -70,7 +71,8 @@
 
   function renderLibrary(){
     if(!library||!list)return;
-    const all=CMAZoneQuestionStore.read();\n    const rows=all.filter(q=>(currentFilter==='all'||q.questionType===currentFilter)&&(!librarySearch||String(q.questionNo||'').toLowerCase().includes(librarySearch)||String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').toLowerCase().includes(librarySearch))&&(!librarySubject||q.subject===librarySubject)&&(!libraryAttempt||String(q.attempt||q.source||'')===libraryAttempt)&&(!libraryChapter||q.chapter===libraryChapter));
+    const all=CMAZoneQuestionStore.read();
+    const rows=all.filter(q=>(currentFilter==='all'||q.questionType===currentFilter)&&(!librarySearch||String(q.questionNo||'').toLowerCase().includes(librarySearch)||String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').toLowerCase().includes(librarySearch))&&(!librarySubject||q.subject===librarySubject)&&(!libraryAttempt||String(q.attempt||q.source||'')===libraryAttempt)&&(!libraryChapter||q.chapter===libraryChapter));
     library.style.display='block';
     list.innerHTML=rows.length?rows.map((q,i)=>{
       const previewText=String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,220);
