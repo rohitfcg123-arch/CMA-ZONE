@@ -1,1 +1,97 @@
-(()=>{const s=JSON.parse(sessionStorage.getItem('cmaZoneSubjectiveSetup')||'null'),rows=(window.CMAZoneQuestionStore?.read()||[]);if(!s){location.href='subjective.html';return}const qs=rows.filter(q=>q.questionType==='subjective'&&q.subject===s.subject&&(q.surfaces||[]).includes('subjective-pyq')&&(s.chapter==='all'||q.chapter===s.chapter)&&(s.mode!=='pyq'||!s.attempt||s.attempt==='all'||q.attempt===s.attempt));let i=0,left=Number(s.durationMinutes||180)*60,t;const q=document.getElementById('q'),prev=document.getElementById('prev'),next=document.getElementById('next'),sub=document.getElementById('submit'),prog=document.getElementById('prog'),timer=document.getElementById('timer'),status=document.getElementById('status');document.getElementById('src').textContent=s.mode==='mtp'?'MTP':'PYQ · '+(s.attempt||'All Attempts');document.getElementById('title').textContent=s.subject;document.getElementById('meta').textContent=(s.chapter==='all'?'All Chapters':s.chapter)+' · '+qs.length+' questions · Solve on paper';const fmt=x=>Math.floor(x/60)+':'+String(x%60).padStart(2,'0');function draw(){if(!qs.length){q.innerHTML='<p>No matching questions found.</p>';prev.disabled=next.disabled=true;return}const x=qs[i];q.innerHTML='<div class="run-question"><div class="question-no">Question '+x.questionNo+' · '+(x.marks||0)+' Marks</div><div class="question-text">'+(x.questionHtml||'<p>'+String(x.question||'').replace(/\n/g,'<br>')+'</p>')+'</div><div class="paper-note">Solve this question on paper.</div></div>';prev.disabled=i===0;next.style.display=i===qs.length-1?'none':'';sub.style.display=i===qs.length-1?'block':'none';prog.textContent=(i+1)+' / '+qs.length;timer.textContent=fmt(left)}function finish(){clearInterval(t);sessionStorage.setItem('cmaZoneSubjectiveResult',JSON.stringify({setup:s,questionIds:qs.map(x=>x.id)}));status.textContent='Paper submitted. Exam session completed.';sub.disabled=prev.disabled=next.disabled=true}prev.onclick=()=>{if(i){i--;draw()}};next.onclick=()=>{if(i<qs.length-1){i++;draw()}};sub.onclick=finish;draw();t=setInterval(()=>{left--;timer.textContent=fmt(left);if(left<=0)finish()},1000)})();
+(() => {
+  const setup = JSON.parse(sessionStorage.getItem('cmaZoneSubjectiveSetup') || 'null');
+  const rows = window.CMAZoneQuestionStore?.read() || [];
+  if (!setup) { location.replace('subjective.html'); return; }
+
+  const qs = rows.filter(q =>
+    q.questionType === 'subjective' &&
+    q.subject === setup.subject &&
+    Array.isArray(q.surfaces) &&
+    q.surfaces.includes('subjective-pyq') &&
+    (setup.chapter === 'all' || q.chapter === setup.chapter) &&
+    (setup.mode !== 'pyq' || !setup.attempt || setup.attempt === 'all' || q.attempt === setup.attempt)
+  );
+
+  const timer = document.getElementById('timer');
+  const list = document.getElementById('qList');
+  const submit = document.getElementById('submit');
+  const status = document.getElementById('status');
+
+  document.getElementById('src').textContent =
+    setup.mode === 'mtp' ? 'MTP' : 'PYQ · ' + (setup.attempt || 'All Attempts');
+  document.getElementById('title').textContent = setup.subject;
+  document.getElementById('meta').textContent =
+    (setup.chapter === 'all' ? 'All Chapters' : setup.chapter) + ' · ' + qs.length + ' questions · Solve on paper';
+  document.getElementById('paperInfo').textContent =
+    (setup.chapter === 'all' ? 'All Chapters' : setup.chapter) + ' · ' + qs.length + ' questions · Questions continue vertically on one paper';
+
+  let left = Number(setup.durationMinutes || 180) * 60;
+  let finished = false;
+
+  const fmt = x => Math.floor(Math.max(0, x) / 60) + ':' + String(Math.max(0, x) % 60).padStart(2, '0');
+
+  const renderQuestion = (x, index) => {
+    const card = document.createElement('article');
+    card.className = 'subjective-question-card';
+    const no = document.createElement('div');
+    no.className = 'subjective-question-top';
+    no.innerHTML =
+      '<div><div class="question-no">Question ' + (x.questionNo || (index + 1)) + '</div>' +
+      '<div class="question-meta-line"><span><b>Subject:</b> ' + (x.subject || setup.subject) + '</span>' +
+      '<span><b>Chapter:</b> ' + (x.chapter || '—') + '</span>' +
+      (x.marks ? '<span><b>Marks:</b> ' + x.marks + '</span>' : '') + '</div></div>' +
+      '<span class="attempt-badge">' + (x.attempt || (setup.mode === 'mtp' ? 'MTP' : 'PYQ')) + ' Attempt</span>';
+    card.appendChild(no);
+
+    const divider = document.createElement('div');
+    divider.className = 'question-divider';
+    card.appendChild(divider);
+
+    const body = document.createElement('div');
+    body.className = 'question-text';
+    if (x.questionHtml) body.innerHTML = x.questionHtml;
+    else body.innerHTML = '<p>' + String(x.question || '').replace(/\n/g, '<br>') + '</p>';
+    card.appendChild(body);
+
+    const note = document.createElement('div');
+    note.className = 'paper-note';
+    note.textContent = 'Solve this question on paper.';
+    card.appendChild(note);
+    return card;
+  };
+
+  const render = () => {
+    list.innerHTML = '';
+    if (!qs.length) {
+      list.innerHTML = '<div class="subjective-empty">No matching questions found for the selected Group, Subject, Chapter or Attempt.</div>';
+      submit.disabled = true;
+      return;
+    }
+    qs.forEach((x, i) => list.appendChild(renderQuestion(x, i)));
+  };
+
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    clearInterval(loop);
+    sessionStorage.setItem('cmaZoneSubjectiveResult', JSON.stringify({
+      setup,
+      questionIds: qs.map(x => x.id),
+      completedAt: new Date().toISOString()
+    }));
+    submit.disabled = true;
+    status.textContent = 'Paper submitted. Exam session completed.';
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  };
+
+  submit.addEventListener('click', finish);
+  render();
+  timer.textContent = fmt(left);
+
+  const loop = setInterval(() => {
+    if (finished) return;
+    left--;
+    timer.textContent = fmt(left);
+    if (left <= 0) finish();
+  }, 1000);
+})();
