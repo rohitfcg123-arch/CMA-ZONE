@@ -29,3 +29,14 @@ footer{max-width:1180px;margin:auto;padding:0 20px 30px;text-align:center;color:
 .subjective-mode-grid,.subjective-mode,.subjective-form-grid,.subjective-form-grid .mcq-field,.subjective-form-grid select,.exam-setup-grid,.exam-setup-grid .mcq-field,.exam-setup-grid select{position:relative;z-index:5;pointer-events:auto}
 .subjective-mode{appearance:none;-webkit-appearance:none;touch-action:manipulation}
 .subjective-form-grid select,.exam-setup-grid select{appearance:auto;-webkit-appearance:auto;touch-action:manipulation;cursor:pointer}
+
+/* Mobile selector reliability */
+.group-section{position:relative;z-index:10}
+.subjective-setup,.exam-setup-grid{isolation:isolate}
+.subjective-mode-grid,.subjective-mode,.subjective-form-grid,.subjective-form-grid .mcq-field,
+.subjective-form-grid select,.exam-setup-grid,.exam-setup-grid .mcq-field,.exam-setup-grid select{
+  position:relative;z-index:20;pointer-events:auto;touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+.subjective-mode{cursor:pointer;user-select:none;-webkit-user-select:none}
+.subjective-form-grid select,.exam-setup-grid select{cursor:pointer}
