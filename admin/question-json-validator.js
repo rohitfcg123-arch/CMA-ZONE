@@ -79,14 +79,46 @@
     const stored=Array.isArray(CMAZoneQuestionStore.read())?CMAZoneQuestionStore.read():[];
     const draftRows=validated&&Array.isArray(validated.qs)?validated.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:validated.topSubject,attempt:validated.topAttempt})):[];
     const seen=new Set(), all=[];
-    stored.concat(draftRows).forEach((raw,i)=>{const q=(raw&&typeof raw==='object')?CMAZoneQuestionStore.normalize(raw,i,{subject:raw.subject||raw.subjectName||'',attempt:raw.attempt||raw.paperAttempt||''}):null;if(!q)return;const key=q.id||[q.questionNo,q.subject,q.chapter,q.attempt,String(q.question||q.questionHtml||q.text||'')].join('|');if(!seen.has(key)){seen.add(key);all.push(q)}});
+    stored.forEach((raw,i)=>{const q=(raw&&typeof raw==='object')?CMAZoneQuestionStore.normalize(raw,i,{subject:raw.subject||raw.subjectName||'',attempt:raw.attempt||raw.paperAttempt||''}):null;if(!q)return;const key=q.id||[q.questionNo,q.subject,q.chapter,q.attempt,String(q.question||q.questionHtml||q.text||'')].join('|');if(!seen.has(key)){seen.add(key);all.push({...q,__stored:true})}});
+    draftRows.forEach((q,i)=>{if(!q)return;const key='draft|'+[q.questionNo,q.subject,q.chapter,q.attempt,String(q.question||q.questionHtml||q.text||'')].join('|');if(!seen.has(key)){seen.add(key);all.push({...q,__draft:true})}});
     const rows=all.filter(q=>(currentFilter==='all'||(currentFilter==='pyq' ? (String(q.source||'').toUpperCase().includes('PYQ')||q.surfaces?.includes('mcq-pyq')||q.surfaces?.includes('subjective-pyq')) : q.questionType===currentFilter))&&(!librarySearch||String(q.questionNo||'').toLowerCase().includes(librarySearch)||String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').toLowerCase().includes(librarySearch))&&(!librarySubject||q.subject===librarySubject)&&(!libraryAttempt||String(q.attempt||q.source||'')===libraryAttempt)&&(!libraryChapter||q.chapter===libraryChapter));
     library.style.display='block';
     list.innerHTML=rows.length?rows.map((q,i)=>{
       const previewText=String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
-      return '<div class="question-library-row"><div class="question-library-main"><div class="question-library-top"><strong>'+esc(q.questionNo||('Question '+(i+1)))+'</strong><span>'+esc(q.questionType==='mcq'?'MCQ':'Subjective')+'</span><span>'+esc(q.subject||'')+'</span><span>'+esc(q.chapter||'')+'</span><span>'+esc(q.marks||'—')+' Marks</span></div><div class="question-library-attempt">'+esc(q.attempt||q.source||'No Attempt')+'</div><p>'+esc(previewText||'Question content stored as HTML.')+'</p></div><button class="btn btn-gold edit-question-btn" data-id="'+esc(q.id)+'" type="button">EDIT</button></div>'
+      return '<div class="question-library-row"><div class="question-library-main"><div class="question-library-top"><strong>'+esc(q.questionNo||('Question '+(i+1)))+'</strong><span>'+esc(q.questionType==='mcq'?'MCQ':'Subjective')+'</span><span>'+esc(q.subject||'')+'</span><span>'+esc(q.chapter||'')+'</span><span>'+esc(q.marks||'—')+' Marks</span></div><div class="question-library-attempt">'+esc(q.attempt||q.source||'No Attempt')+'</div><p>'+esc(previewText||'Question content stored as HTML.')+'</p></div><div class="question-library-actions"><button class="btn btn-gold edit-question-btn" data-id="'+esc(q.id)+'" type="button">EDIT</button><button class="btn btn-danger remove-question-btn" data-id="'+esc(q.id)+'" data-draft="'+(q.__draft?'1':'0')+'" type="button">REMOVE</button></div></div>'
     }).join(''):'<div class="question-library-empty">No questions found for this filter.</div>';
     list.querySelectorAll('.edit-question-btn').forEach(b=>b.addEventListener('click',()=>openEditor(b.dataset.id)));
+    list.querySelectorAll('.remove-question-btn').forEach(b=>b.addEventListener('click',()=>removeQuestion(b.dataset.id,b.dataset.draft==='1')));
+  }
+
+  function removeQuestion(id,isDraft){
+    const q=isDraft
+      ? (validated?.qs||[]).find((x,i)=>{const n=getField(x,['questionNo','questionNumber','number','no']);const subj=getField(x,['subject','subjectName'])||validated.topSubject;const ch=getField(x,['chapter','chapterName'])||getField(x.category||{},['chapter','chapterName']);return (n&&String(n)===String(id))||String(x.id||'')===String(id)||String(subj+'|'+ch+'|'+n)===String(id)})
+      : CMAZoneQuestionStore.read().find(x=>String(x.id)===String(id));
+    if(!q){alert('Question record not found.');return}
+    const no=getField(q,['questionNo','questionNumber','number','no'])||'this question';
+    if(!confirm('Remove '+no+' from the Question Upload review/library? This cannot be undone from this screen.'))return;
+    if(isDraft){
+      const targetNo=getField(q,['questionNo','questionNumber','number','no']);
+      const targetSubject=getField(q,['subject','subjectName'])||validated.topSubject;
+      const targetChapter=getField(q,['chapter','chapterName'])||getField(q.category||{},['chapter','chapterName']);
+      validated.qs=validated.qs.filter(x=>{
+        const n=getField(x,['questionNo','questionNumber','number','no']);
+        const subj=getField(x,['subject','subjectName'])||validated.topSubject;
+        const ch=getField(x,['chapter','chapterName'])||getField(x.category||{},['chapter','chapterName']);
+        return !(String(n)===String(targetNo)&&String(subj)===String(targetSubject)&&String(ch)===String(targetChapter));
+      });
+      saveDraft({...Object.fromEntries(Object.entries(JSON.parse(sessionStorage.getItem('cmaZoneQuestionUploadDraft')||'{}').data||{})),questions:validated.qs},input.files[0]?.name||'Saved JSON draft');
+      if(!validated.qs.length){clearDraft();validated=null;publishBtn.disabled=true}
+      output.className='json-validation-result success';
+      output.innerHTML='<strong>REMOVED.</strong> '+esc(no)+' was removed from the current review draft. It will not be published.';
+    }else{
+      const rows=CMAZoneQuestionStore.read().filter(x=>String(x.id)!==String(id));
+      CMAZoneQuestionStore.write(rows);
+      output.className='json-validation-result success';
+      output.innerHTML='<strong>REMOVED.</strong> '+esc(no)+' was removed from the stored question library.';
+    }
+    renderLibrary();
   }
 
   function populateSubjectSelect(selected){
