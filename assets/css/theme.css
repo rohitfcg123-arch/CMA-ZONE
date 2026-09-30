@@ -42,3 +42,45 @@ footer{max-width:1180px;margin:auto;padding:0 20px 30px;text-align:center;color:
 .subjective-form-grid select,.exam-setup-grid select{cursor:pointer}
 
 .exam-run{padding:20px}.run-head{display:flex;justify-content:space-between;gap:15px;align-items:center}.run-head h2{margin:5px 0}.run-head p{margin:0;color:var(--muted);font-size:12px}.run-timer{padding:10px 14px;border-radius:10px;background:var(--teal);color:#fff;font-weight:900}.run-question{margin-top:16px;padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--paper)}.question-no{font-weight:900;color:#9a741e;margin-bottom:10px}.question-text{line-height:1.6}.cma-question-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}.cma-question-table th,.cma-question-table td{border:1px solid var(--border);padding:7px;text-align:left}.cma-question-table th{background:var(--paper2)}.paper-note{margin-top:12px;padding:10px;background:var(--paper2);border-radius:9px;color:var(--muted);font-size:12px}.run-actions{display:flex;justify-content:space-between;align-items:center;margin-top:14px}@media(max-width:560px){.run-head{align-items:flex-start}.run-question{padding:14px}}
+
+
+/* Subjective paper / continuous-scroll exam */
+.subjective-paper{padding:0;overflow:hidden}
+.subjective-paper-head{padding:20px 20px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--border);background:var(--paper)}
+.subjective-paper-head h2{margin:5px 0 3px;color:var(--teal-dark);font-size:22px}
+.subjective-paper-head p{margin:0;color:var(--muted);font-size:12px}
+.subjective-question-list{padding:14px;background:var(--cream)}
+.subjective-question-card{background:var(--paper);border:1px solid var(--border);border-radius:22px;padding:20px;margin:0 0 14px;box-shadow:0 5px 18px rgba(8,38,39,.04)}
+.subjective-question-card:last-child{margin-bottom:0}
+.subjective-question-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.subjective-question-top .question-no{font-size:20px;color:var(--teal-dark);margin:0 0 8px}
+.question-meta-line{display:flex;flex-wrap:wrap;gap:8px 16px;color:#8b7747;font-size:12px;line-height:1.5}
+.question-meta-line b{color:#7b642e}
+.attempt-badge{flex:0 0 auto;padding:9px 13px;border-radius:999px;background:var(--teal-soft);border:1px solid #d4e2df;color:var(--teal);font-size:11px;font-weight:900;white-space:nowrap}
+.question-divider{height:1px;background:var(--border);margin:14px 0 17px}
+.subjective-question-card .question-text{font-size:16px;line-height:1.7;color:var(--text)}
+.subjective-question-card .question-text p{margin:0 0 12px}
+.subjective-question-card .question-text p:last-child{margin-bottom:0}
+.subjective-question-card .question-text table,.subjective-question-card .question-text .cma-question-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;table-layout:auto}
+.subjective-question-card .question-text th,.subjective-question-card .question-text td{border:1px solid #cfc8b8;padding:10px 11px;text-align:left;vertical-align:top;line-height:1.45}
+.subjective-question-card .question-text th{background:var(--paper2);color:var(--teal);font-weight:900}
+.subjective-question-card .question-text ul,.subjective-question-card .question-text ol{margin:10px 0 14px;padding-left:24px}
+.subjective-question-card .question-text li{margin:5px 0}
+.subjective-question-card .question-text img{max-width:100%;height:auto}
+.subjective-question-card .paper-note{margin-top:18px}
+.subjective-submit-bar{position:sticky;bottom:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 16px;background:rgba(255,253,248,.96);border-top:1px solid var(--border);backdrop-filter:blur(8px)}
+.subjective-submit-bar .mcq-status{margin:0}
+.subjective-empty{padding:30px;text-align:center;background:var(--paper);border:1px solid var(--border);border-radius:16px;color:var(--muted)}
+@media(max-width:700px){
+  .subjective-paper-head{padding:16px;align-items:flex-start}
+  .subjective-paper-head h2{font-size:19px}
+  .subjective-question-list{padding:9px}
+  .subjective-question-card{padding:16px;border-radius:18px}
+  .subjective-question-top{display:block}
+  .attempt-badge{display:inline-flex;margin-top:9px}
+  .subjective-question-card .question-text{font-size:15.5px;line-height:1.65}
+  .subjective-question-card .question-text table,.subjective-question-card .question-text .cma-question-table{font-size:12px;display:block;overflow-x:auto;white-space:normal}
+  .subjective-question-card .question-text th,.subjective-question-card .question-text td{padding:8px}
+  .subjective-submit-bar{padding:11px 12px}
+  .subjective-submit-bar .btn{white-space:nowrap}
+}
