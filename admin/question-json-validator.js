@@ -33,8 +33,8 @@
 
   function validateData(data){
     const qs=getQuestions(data);if(!Array.isArray(qs)||!qs.length)return{errors:['No questions array found. Expected questions/questionBank/items/data.']};
-    const map=subjectMap(),errors=[],topSubject=getField(data,['subject','subjectName']),topAttempt=getField(data,['attempt','paperAttempt']);
-    qs.forEach((q,i)=>{const no=i+1,subject=getField(q,['subject','subjectName'])||topSubject,chapter=getField(q,['chapter','chapterName'])||getField(q.category||{},['chapter','chapterName'])||getField(q.metadata||{},['chapter','chapterName']);if(!subject)errors.push('Question '+no+': subject is missing.');else if(!map[subject])errors.push('Question '+no+': wrong subject "'+subject+'". It is not in the CMA Zone master.');if(!chapter)errors.push('Question '+no+': chapter is missing.');else if(subject&&map[subject]&&!map[subject].includes(chapter))errors.push('Question '+no+': chapter "'+chapter+'" does not exactly match the master chapter for "'+subject+'".')});
+    const map=subjectMap(),errors=[],topSubject=getField(data,['subject','subjectName']),topAttempt=getField(data,['attempt','paperAttempt']),duplicateKeys=new Map();
+    qs.forEach((q,i)=>{const no=i+1,subject=getField(q,['subject','subjectName'])||topSubject,chapter=getField(q,['chapter','chapterName'])||getField(q.category||{},['chapter','chapterName'])||getField(q.metadata||{},['chapter','chapterName']);if(!subject)errors.push('Question '+no+': subject is missing.');else if(!map[subject])errors.push('Question '+no+': wrong subject "'+subject+'". It is not in the CMA Zone master.');if(!chapter)errors.push('Question '+no+': chapter is missing.');else if(subject&&map[subject]&&!map[subject].includes(chapter))errors.push('Question '+no+': chapter "'+chapter+'" does not exactly match the master chapter for "'+subject+'".');const attempt=getField(q,['attempt','paperAttempt'])||topAttempt;const questionNo=getField(q,['questionNo','questionNumber','number','no']);if(attempt&&subject&&chapter&&questionNo){const key=[subject,chapter,attempt,questionNo].map(x=>String(x).trim().toLowerCase()).join('|||');if(duplicateKeys.has(key))errors.push('Question '+no+': DUPLICATE — '+subject+' / '+chapter+' / '+attempt+' / '+questionNo+' already exists in question '+duplicateKeys.get(key)+'.');else duplicateKeys.set(key,no)}});
     return{errors,qs,topSubject,topAttempt}
   }
   function showErrors(es){output.className='json-validation-result error';output.innerHTML='<strong>UPLOAD BLOCKED — exact master validation failed.</strong><ul>'+es.slice(0,50).map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+(es.length>50?'<p>Showing first 50 errors. Fix every invalid record.</p>':'');publishBtn.disabled=true}
@@ -60,6 +60,10 @@
 
   function publish(){
     if(!validated)return;
+    const old=CMAZoneQuestionStore.read(),rows=validated.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:validated.topSubject,attempt:validated.topAttempt}));
+    const seen=new Map(),dups=[];
+    old.concat(rows).forEach(q=>{const attempt=String(q.attempt||'').trim(),no=String(q.questionNo||'').trim(),subject=String(q.subject||'').trim(),chapter=String(q.chapter||'').trim();if(attempt&&no&&subject&&chapter){const key=[subject,chapter,attempt,no].map(x=>x.toLowerCase()).join('|||');if(seen.has(key))dups.push(subject+' / '+chapter+' / '+attempt+' / '+no);else seen.set(key,true)}});
+    if(dups.length){output.className='json-validation-result error';output.innerHTML='<strong>PUBLISH BLOCKED — DUPLICATE QUESTION FOUND.</strong><ul>'+[...new Set(dups)].slice(0,50).map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';return}
     setLoading(publishBtn,true);
     setTimeout(()=>{
       const old=CMAZoneQuestionStore.read(),rows=validated.qs.map((q,i)=>CMAZoneQuestionStore.normalize(q,i,{subject:validated.topSubject,attempt:validated.topAttempt}));
@@ -113,9 +117,9 @@
     const subject=document.getElementById('editSubject').value,chapter=document.getElementById('editChapter').value;
     const map=subjectMap();if(!subject||!map[subject]||!chapter||!map[subject].includes(chapter)){alert('Please select a valid Subject and Chapter from the CMA Zone master.');return}
     const qrows=CMAZoneQuestionStore.read(),idx=qrows.findIndex(x=>x.id===editingId);if(idx<0)return;
-    const old=qrows[idx],newContent=document.getElementById('editQuestionContent').value;
+    const old=qrows[idx],newQuestionNo=document.getElementById('editQuestionNo').value.trim();const attempt=String(old.attempt||'').trim();if(attempt&&newQuestionNo){const duplicate=qrows.some((x,i)=>i!==idx&&String(x.subject||'').trim()===subject&&String(x.chapter||'').trim()===chapter&&String(x.attempt||'').trim()===attempt&&String(x.questionNo||'').trim()===newQuestionNo);if(duplicate){alert('Duplicate blocked: same Subject + Chapter + Attempt + Question No. already exists.');return}}const newContent=document.getElementById('editQuestionContent').value;
     if(!confirm('Sure you want to edit your main question content? This changes the uploaded question record.'))return;
-    const updated={...old,questionNo:document.getElementById('editQuestionNo').value.trim(),marks:document.getElementById('editMarks').value.trim(),subject,chapter,questionHtml:newContent};
+    const updated={...old,questionNo:newQuestionNo,marks:document.getElementById('editMarks').value.trim(),subject,chapter,questionHtml:newContent};
     delete updated.question;
     qrows[idx]=updated;CMAZoneQuestionStore.write(qrows);closeEditor();renderLibrary();
   }
