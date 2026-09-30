@@ -4,7 +4,7 @@
     preview=document.getElementById('jsonUploadPreview'),previewText=document.getElementById('jsonPreviewText'),
     previewMeta=document.getElementById('jsonPreviewMeta'),library=document.getElementById('questionLibrary'),
     list=document.getElementById('questionList'),modal=document.getElementById('questionEditModal');
-  let validated=null,currentFilter='all',editingId=null;
+  let validated=null,currentFilter='all',editingId=null,librarySearch='',librarySubject='',libraryAttempt='',libraryChapter='';
 
   function subjectMap(){const map={},master=window.CMA_ZONE_CHAPTER_MASTER||{};Object.values(master).forEach(g=>Object.keys(g).forEach(s=>map[s]=g[s]));return map}
   function getQuestions(d){if(Array.isArray(d))return d;return d.questions||d.questionBank||d.items||d.data||null}
@@ -70,7 +70,7 @@
 
   function renderLibrary(){
     if(!library||!list)return;
-    const rows=CMAZoneQuestionStore.read().filter(q=>currentFilter==='all'||q.questionType===currentFilter);
+    const all=CMAZoneQuestionStore.read();\n    const rows=all.filter(q=>(currentFilter==='all'||q.questionType===currentFilter)&&(!librarySearch||String(q.questionNo||'').toLowerCase().includes(librarySearch)||String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').toLowerCase().includes(librarySearch))&&(!librarySubject||q.subject===librarySubject)&&(!libraryAttempt||String(q.attempt||q.source||'')===libraryAttempt)&&(!libraryChapter||q.chapter===libraryChapter));
     library.style.display='block';
     list.innerHTML=rows.length?rows.map((q,i)=>{
       const previewText=String(q.question||q.questionHtml||q.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,220);
@@ -116,7 +116,9 @@
 
   validateBtn.addEventListener('click',validate);publishBtn.addEventListener('click',publish);
   input.addEventListener('change',()=>{validated=null;sessionStorage.removeItem('cmaZoneQuestionUploadDraft');publishBtn.disabled=true;output.className='json-validation-result';output.textContent=input.files[0]?'File selected. Click Validate JSON.':'';if(!input.files.length)preview.style.display='none'});
-  document.querySelectorAll('.question-filter').forEach(b=>b.addEventListener('click',()=>{currentFilter=b.dataset.filter;document.querySelectorAll('.question-filter').forEach(x=>x.classList.toggle('active',x===b));renderLibrary()}));
+  function fillLibraryFilters(){const rows=CMAZoneQuestionStore.read(),ss=document.getElementById('questionSubjectFilter'),aa=document.getElementById('questionAttemptFilter'),cc=document.getElementById('questionChapterFilter');if(!ss||!aa||!cc)return;const subjects=[...new Set(rows.map(q=>q.subject).filter(Boolean))].sort(),attempts=[...new Set(rows.map(q=>q.attempt||q.source).filter(Boolean))].sort(),chapters=[...new Set(rows.map(q=>q.chapter).filter(Boolean))].sort();ss.innerHTML='<option value="">ALL SUBJECTS</option>'+subjects.map(x=>'<option>'+esc(x)+'</option>').join('');aa.innerHTML='<option value="">ALL ATTEMPTS</option>'+attempts.map(x=>'<option>'+esc(x)+'</option>').join('');cc.innerHTML='<option value="">ALL CHAPTERS</option>'+chapters.map(x=>'<option>'+esc(x)+'</option>').join('');ss.value=librarySubject;aa.value=libraryAttempt;cc.value=libraryChapter}
+document.querySelectorAll('.question-filter').forEach(b=>b.addEventListener('click',()=>{currentFilter=b.dataset.filter;document.querySelectorAll('.question-filter').forEach(x=>x.classList.toggle('active',x===b));renderLibrary()}));
+document.getElementById('questionLibrarySearch')?.addEventListener('input',e=>{librarySearch=e.target.value.trim().toLowerCase();renderLibrary()});document.getElementById('questionSubjectFilter')?.addEventListener('change',e=>{librarySubject=e.target.value;renderLibrary()});document.getElementById('questionAttemptFilter')?.addEventListener('change',e=>{libraryAttempt=e.target.value;renderLibrary()});document.getElementById('questionChapterFilter')?.addEventListener('change',e=>{libraryChapter=e.target.value;renderLibrary()});
   document.querySelectorAll('[data-close-edit]').forEach(x=>x.addEventListener('click',closeEditor));
   document.getElementById('editSubject')?.addEventListener('change',e=>populateChapterSelect(e.target.value,''));
   document.getElementById('saveQuestionEdit')?.addEventListener('click',saveEdit);
@@ -133,7 +135,7 @@
       window.location.assign('question-preview.html');
     }catch(e){alert('Preview could not be opened: '+(e.message||'Unknown error'))}
   });
-  window.addEventListener('cmaZoneQuestionsUpdated',renderLibrary);
+  window.addEventListener('cmaZoneQuestionsUpdated',()=>{fillLibraryFilters();renderLibrary()});
   renderLibrary();
   restoreDraft();
 })();
